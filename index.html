@@ -181,6 +181,87 @@
   .bcast{border:1px solid #FF3D6340;border-left:3px solid var(--red);background:#1c0d1388;
     border-radius:0 10px 10px 0;padding:9px 12px;font-size:12.5px;color:#FFC3CF;line-height:1.55}
   .bcast b{color:#FF8FA3;font-weight:700}
+
+  /* ===== 功能卡 ===== */
+  .r-s{--rc:#CBD5E6;--rg:#CBD5E633}
+  .r-g{--rc:#FFC93B;--rg:#FFC93B33}
+  .r-p{--rc:#B84DFF;--rg:#B84DFF33}
+  .handbar{display:flex;gap:8px;align-items:center;border:1px solid var(--hair);border-radius:13px;
+    padding:9px 11px;background:linear-gradient(#0E1120,#0A0C16)}
+  .handbar .lb{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--dim2)}
+  .handbar .none{font-size:12.5px;color:var(--dim2)}
+  .hcard{flex:1;display:flex;align-items:center;gap:9px;border:1px solid var(--rc);border-radius:10px;
+    padding:8px 10px;background:linear-gradient(120deg,var(--rg),#0b0e18 70%);cursor:pointer;
+    box-shadow:0 0 22px -14px var(--rc);min-width:0}
+  .hcard .gem{width:9px;height:9px;border-radius:2px;background:var(--rc);transform:rotate(45deg);flex:none}
+  .hcard .nm{font-family:var(--disp);font-size:15px;font-weight:700;color:var(--rc);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis}
+  .hcard .tg{font-family:var(--mono);font-size:9px;color:var(--dim2);margin-left:auto;flex:none}
+  .hcard.lock{opacity:.55;border-color:var(--hair2)}
+  .hcard.lock .nm{color:var(--dim)}
+  @media(prefers-reduced-motion:no-preference){.hcard.shake{animation:shk .3s}
+    @keyframes shk{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}}
+  .sheet{position:fixed;inset:0;background:#03040acc;backdrop-filter:blur(6px);z-index:60;
+    display:flex;align-items:flex-end;justify-content:center;padding:14px}
+  .sheet .pane{width:100%;max-width:460px;border:1px solid var(--rc);border-radius:18px;padding:18px;
+    background:linear-gradient(160deg,var(--rg),#0a0d16 55%);box-shadow:0 0 60px -20px var(--rc)}
+  .sheet .rr{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--rc)}
+  .sheet h3{font-family:var(--disp);font-size:26px;margin:4px 0 2px;color:var(--rc)}
+  .sheet .ds{font-size:14px;color:var(--ink);line-height:1.65;margin:8px 0 4px}
+  .sheet .mt{font-family:var(--mono);font-size:10.5px;color:var(--dim2);letter-spacing:.08em}
+  .sheet .why{border-left:3px solid var(--red);background:#1c0d1388;border-radius:0 8px 8px 0;
+    padding:8px 11px;font-size:12.5px;color:#FFC3CF;margin-top:10px}
+  .sheet .acts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+  .pick{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .pick button{border:1px solid var(--hair2);border-radius:9px;padding:8px 11px;font-size:13px;
+    background:#141826;color:var(--ink);cursor:pointer;font-family:var(--body)}
+  .pick button:hover{border-color:var(--rc);color:var(--rc)}
+  .fxl{position:fixed;inset:0;z-index:70;pointer-events:none;display:flex;align-items:center;
+    justify-content:center;flex-direction:column;gap:6px}
+  .fxl .fnm{font-family:var(--disp);font-size:40px;font-weight:700;color:var(--rc);text-align:center;
+    text-shadow:0 0 30px var(--rc);padding:0 16px}
+  .fxl .fby{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:#fff9}
+  .fxl .sweep{position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,var(--rc) 50%,transparent 62%);
+    opacity:.28}
+  @media(prefers-reduced-motion:no-preference){
+    .fxl .fnm{animation:fxIn .5s cubic-bezier(.2,.9,.25,1) both}
+    .fxl .sweep{animation:fxSw 1.1s ease-out both}
+    @keyframes fxIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+    @keyframes fxSw{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+  }
+  .cardlog{font-family:var(--mono);font-size:10.5px;color:var(--dim2);text-align:center;line-height:1.7}
+  .cardlog b{color:var(--cy)}
+  .prepbox{display:flex;flex-direction:column;gap:10px}
+  .prepwho{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+  .pw{font-family:var(--mono);font-size:10.5px;border:1px solid var(--hair2);border-radius:20px;
+    padding:4px 10px;color:var(--dim)}
+  .pw.ok{border-color:#2FE39B55;color:var(--green)}
+  /* 開卡包 */
+  .packs{display:flex;gap:14px;justify-content:center;margin:6px 0}
+  .pk{width:112px;height:158px;perspective:800px}
+  .pk .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.3,.9,.3,1)}
+  .pk.open .in{transform:rotateY(180deg)}
+  .pk .fa,.pk .bk{position:absolute;inset:0;border-radius:13px;backface-visibility:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:9px;text-align:center}
+  .pk .bk{border:1px solid #2a3050;background:repeating-linear-gradient(45deg,#10142a,#10142a 6px,#0b0e1d 6px,#0b0e1d 12px)}
+  .pk .bk span{font-family:var(--disp);font-size:30px;color:#3b4470}
+  .pk .fa{transform:rotateY(180deg);border:1px solid var(--rc);
+    background:linear-gradient(160deg,var(--rg),#0a0d16 60%);box-shadow:0 0 40px -16px var(--rc)}
+  .pk .fa .rr{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--rc)}
+  .pk .fa .nm{font-family:var(--disp);font-size:16px;font-weight:700;color:var(--rc);line-height:1.15}
+  .pk .fa .ds{font-size:10px;color:var(--dim);line-height:1.4}
+  .pk .fa.empty{border-color:var(--hair2);background:#0b0e18;box-shadow:none}
+  .pk .fa.empty .nm{color:var(--dim2);font-size:15px}
+  .pk .cap{font-family:var(--mono);font-size:9.5px;text-align:center;margin-top:6px}
+  @media(prefers-reduced-motion:no-preference){
+    .pk.open .fa{animation:pkPop .5s .5s both}
+    @keyframes pkPop{0%{filter:brightness(2.4)}100%{filter:none}}
+  }
+  .opt.masked .txt{filter:blur(0);color:transparent;position:relative}
+  .opt.masked{background:repeating-linear-gradient(45deg,#0a0c14,#0a0c14 7px,#11142200 7px,#111422 14px);
+    border-color:#2a3050;color:#333a55}
+  .opt.masked .idx{opacity:.3}
+  .opt.gone{opacity:.28;text-decoration:line-through;border-style:dashed}
   .catbar{display:flex;align-items:center;gap:10px;border:1px solid var(--hair2);border-radius:12px;
     padding:9px 13px;background:linear-gradient(#141833,#0b0e19)}
   .catbar .ic{font-size:22px}
@@ -258,6 +339,17 @@
 
     <div id="blkReveal" class="hide"><div class="reveal" id="revealCard"></div></div>
 
+
+    <div id="blkPrep" class="hide prepbox">
+      <div class="catbar" id="prepbar"></div>
+      <div class="prepwho" id="prepWho"></div>
+      <div class="hint" id="prepHint"></div>
+    </div>
+
+    <div id="blkDraw" class="hide" style="display:flex;flex-direction:column;gap:8px">
+      <div class="packs" id="packs"></div>
+      <div class="hint" id="drawHint"></div>
+    </div>
     <div id="blkBet" class="hide" style="display:flex;flex-direction:column;gap:10px">
       <div class="catbar" id="catbar"></div>
       <div class="chipwrap" id="chips"></div>
@@ -286,6 +378,9 @@
       <div class="hint" id="quizHint"></div>
     </div>
 
+    <div class="handbar hide" id="handbar"></div>
+    <div class="cardlog" id="cardlog"></div>
+
     <div id="blkResult" class="hide" style="display:flex;flex-direction:column;gap:10px">
       <div class="card" id="resultBox"></div>
       <button class="btn hide" id="next">下一回合</button>
@@ -301,6 +396,8 @@
     <button class="btn" id="again" style="margin-top:12px">回到組隊大廳<small>重置分數，重新分隊</small></button>
   </section>
 </div>
+<div id="sheetHost"></div>
+<div id="fxHost"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -425,10 +522,13 @@ function teamMembers(t){var o=[];if(!S.players)return o;
 function teamOf(t){return (S.teams&&S.teams[t])||{score:0};}
 function other(t){return t==='r'?'b':'r';}
 function tally(t){
-  var w=[0,0,0,0],votes=(S.votes||{});
+  var w=[0,0,0,0,0,0,0,0],votes=(S.votes||{});
+  var lw=(RT(t).hand25)?2.5:1.5;
   teamMembers(t).forEach(function(m){
-    var v=votes[m.uid];if(v==null||v<0)return;w[v]+=m.p.leader?1.5:1;});
-  var best=-1,bv=0;for(var i=0;i<4;i++){if(w[i]>bv){bv=w[i];best=i;}}
+    var v=votes[m.uid];if(v==null||v<0)return;w[v]+=m.p.leader?lw:1;});
+  var mo=R().mole;
+  if(mo&&mo.team===t&&mo.ans!=null&&mo.ans>=0)w[mo.ans]+=1;   // 內鬼的鬼票算 1 票
+  var best=-1,bv=0;for(var i=0;i<8;i++){if(w[i]>bv){bv=w[i];best=i;}}
   return {w:w,best:best,any:bv>0};
 }
 function allVoted(t){
@@ -459,6 +559,14 @@ function hostTick(){
       return;
     }
     // A 情況：全員投完 → 直接判定，不再有 1.5 秒緩衝
+    if(ph==='prep'){
+      if(R().reroll) return doReroll();
+      if(!anyHands()) return startQuiz();
+      var rdy=R().ready||{},pend=0;
+      for(var hk in hands()){ if((S.players||{})[hk]&&!rdy[hk])pend++; }
+      if(!pend) return startQuiz();
+      return;
+    }
     if(ph==='quiz'&&m.mode!=='B'&&allVoted(m.actor)&&tally(m.actor).any){ return judge(); }
     // B 情況：任一隊長送出 → 立刻判定（不論送出的人是不是房主）
     if(ph==='quiz'&&m.mode==='B'&&m.submit&&!S.result){ return judge(); }
@@ -469,7 +577,9 @@ function hostTick(){
   if(ph==='bet'){ return revealBets(); }
   if(ph==='bid'){ return m.turn?bidTimeout():advanceBid(); }
   if(ph==='quiz'){ return judge(); }
-  if(ph==='result'){ return startRound(); }   // 房主沒按下一回合，10 秒後自動推進
+  if(ph==='prep'){ return startQuiz(); }
+  if(ph==='result'){ return afterResult(); }  // 房主沒按下一回合，10 秒後自動推進
+  if(ph==='draw'){ return finishDraw(); }
 }
 setInterval(function(){try{hostTick();}catch(e){}},400);
 
@@ -487,6 +597,19 @@ function startRound(){
   u['q']={id:pick.id,category:pick.category,difficulty:pick.difficulty,question:pick.question,
           options:pick.options,answer:pick.answer,explain:pick.explain};
   u['votes']=null;u['result']=null;u['bidLog']=null;u['rescueNote']=null;u['meta/rescue']=null;
+  u['meta/fx']=null;u['meta/qAt']=null;
+  // say goodbye：上一回合結束才生效
+  var by=(S.round||{}).bye;
+  if(by&&by.uid&&(S.players||{})[by.uid]){
+    var cand=teamMembers(by.to).filter(function(x){return !x.p.leader&&x.uid!==by.uid;});
+    if(cand.length){
+      var pk2=cand[Math.floor(Math.random()*cand.length)];
+      u['players/'+by.uid+'/team']=by.to;u['players/'+by.uid+'/leader']=false;
+      u['players/'+pk2.uid+'/team']=by.from;u['players/'+pk2.uid+'/leader']=false;
+      u['meta/swapNote']={a:(S.players[by.uid]||{}).name,b:pk2.p.name,ts:now()};
+    }
+  }
+  u['round']=null;
   u['teams/r/bet']=0;u['teams/b/bet']=0;
   u['teams/r/passed']=false;u['teams/b/passed']=false;
   u['teams/r/acted']=false;u['teams/b/acted']=false;
@@ -538,24 +661,92 @@ function finishBid(){
   if(!guard())return;
   var r=teamOf('r').bet||0,b=teamOf('b').bet||0,mode,actor;
   if(r>b){mode='A';actor='r';} else if(b>r){mode='A';actor='b';} else {mode='B';actor=null;}
-  ref.update({'meta/mode':mode,'meta/actor':actor,'meta/turn':null,
-    'meta/phase':'quiz','meta/endsAt':now()+(mode==='B'?30000:30000)});
+  var u={'meta/mode':mode,'meta/actor':actor,'meta/turn':null};
+  if(anyHands()){ u['meta/phase']='prep'; u['meta/endsAt']=now()+15000; }
+  else          { u['meta/phase']='quiz'; u['meta/endsAt']=now()+30000; }
+  ref.update(u);
+}
+function startQuiz(){
+  var m=S.meta,add=0;
+  ['r','b'].forEach(function(t){ if(RT(t).bullet)add+=20000; });
+  ref.update({'meta/phase':'quiz','meta/endsAt':now()+(m.rescue?15000:30000)+add,
+              'meta/qAt':now(),'round/ready':null});
+}
+function doReroll(){
+  var q=S.q,used=S.usedQ||{},pool=[];
+  QB.forEach(function(x){ if(x.category===q.category&&!used[x.id])pool.push(x); });
+  var u={'round/reroll':null};
+  if(pool.length){
+    var k=pool[Math.floor(Math.random()*pool.length)];
+    u['usedQ/'+k.id]=true;u['votes']=null;u['round/hat']=null;u['round/blind']=null;
+    u['q']={id:k.id,category:k.category,difficulty:k.difficulty,question:k.question,
+            options:k.options,answer:k.answer,explain:k.explain};
+  }
+  ref.update(u);
+}
+/* ---- 抽卡 ---- */
+function freeCards(){
+  var used=(S.cards&&S.cards.pool)||{},h=hands(),inHand={};
+  for(var k in h)inHand[h[k]]=1;
+  return CARDS.filter(function(c){return !used[c.id]&&!inHand[c.id];});
+}
+function pickReceiver(t){
+  var ms=teamMembers(t),h=hands();
+  var held=ms.filter(function(x){return h[x.uid];}).length;
+  if(held>=3)return null;
+  var cand=ms.filter(function(x){
+    if(h[x.uid])return false;
+    if(!x.p.online)return false;
+    if(x.p.leader&&ms.length>1)return false;   // 隊長不能持卡，1 人隊除外
+    return true;});
+  if(!cand.length)return null;
+  return cand[Math.floor(Math.random()*cand.length)].uid;
+}
+function afterResult(){
+  var res=S.result||{},d={},any=false;
+  ['r','b'].forEach(function(t){
+    if(!(res.delta&&res.delta[t]>0))return;
+    any=true;
+    var to=pickReceiver(t),fc=freeCards(),hit=(Math.random()<0.20)&&to&&fc.length;
+    d[t]={hit:!!hit,card:hit?fc[Math.floor(Math.random()*fc.length)].id:null,to:to||null,
+          why:to?'':'（隊上沒有能收卡的人）'};
+  });
+  if(!any) return startRound();
+  ref.update({'draw':d,'meta/phase':'draw','meta/endsAt':now()+5600});
+}
+function finishDraw(){
+  var d=S.draw||{},u={'draw':null};
+  ['r','b'].forEach(function(t){var x=d[t];
+    if(x&&x.hit&&x.card&&x.to){u['cards/hands/'+x.to]=x.card;u['cards/pool/'+x.card]=true;}});
+  ref.update(u).then(function(){ startRound(); });
 }
 var _busy=0;
 function guard(){ var t=Date.now(); if(t-_busy<1200) return false; _busy=t; return true; }
+function scoreFor(t,ok,q){
+  var rt=RT(t),bf=BF(t),gain=SC[q.difficulty],loss=teamOf(t).bet||0,tags=[];
+  if(rt.lucky){ok=true;gain=Math.round(gain*0.2);tags.push('這次算你僥倖 −80%');}
+  if(rt.x2){gain*=2;tags.push('雙倍領悟 ×2');}
+  if(bf.cat&&bf.cat[q.category]){gain=Math.round(gain*1.3);tags.push('這我老熟了 +30%');}
+  if(rt.half){loss=Math.round(loss/2);tags.push('打個折 扣分減半');}
+  if(rt.nodie){loss=0;tags.push('我不會死 免扣分');}
+  if(bf.risk){gain=Math.round(gain*1.5);loss=Math.round(loss*1.5);tags.push('投資風險 ±50%');}
+  if(rt.chow){gain=Math.round(gain*rt.chow);loss=Math.round(loss*rt.chow);tags.push('周潤發 ×'+rt.chow);}
+  return {ok:ok,gain:gain,loss:loss,tags:tags};
+}
 function judge(){
   if(!S.q||S.result)return;
   if(!guard())return;
   var m=S.meta,q=S.q,res={};
   if(m.mode==='A'){
-    var t=m.actor,tl=tally(t),ans=tl.best,ok=(ans===q.answer);
-    var gain=SC[q.difficulty],loss=teamOf(t).bet||0;
-    res={mode:'A',actor:t,ans:ans,ok:ok,delta:{},ts:now()};
+    var t=m.actor,tl=tally(t),ans=tl.best,sf=scoreFor(t,ans===optsFor(t).ans,q),ok=sf.ok;
+    var gain=sf.gain,loss=sf.loss;
+    res={mode:'A',actor:t,ans:ans,ok:ok,delta:{},tags:sf.tags,ts:now()};
     if(m.rescue){
       // 搶答失手後的補救回合：先失手的那一隊在這裡才結算
       var rn=S.rescueNote||{},from=rn.from||other(t);
       res.rescue=true;res.rescueFrom=from;res.rescueWrongAns=rn.wrongAns;
-      if(ok){ res.delta[t]=gain; res.delta[from]=-(teamOf(from).bet||0); }
+      var fs=scoreFor(from,false,q);
+      if(ok){ res.delta[t]=gain; res.delta[from]=-fs.loss; }
       else  { res.delta[t]=0;    res.delta[from]=0; }      // 兩隊都答錯 → 誰都不扣
     } else {
       res.delta[t]= ok? gain : -loss;
@@ -563,10 +754,11 @@ function judge(){
   } else {
     var sub=m.submit;
     if(sub&&sub.team){
-      var t2=sub.team,tl2=tally(t2),ans2=(sub.ans!=null?sub.ans:tl2.best),ok2=(ans2===q.answer);
-      res={mode:'B',actor:t2,ans:ans2,ok:ok2,delta:{},ts:now()};
-      if(ok2){res.delta[t2]=SC[q.difficulty];res.delta[other(t2)]=-(teamOf(other(t2)).bet||0);}
-      else {res.delta[t2]=-(teamOf(t2).bet||0);
+      var t2=sub.team,tl2=tally(t2),ans2=(sub.ans!=null?sub.ans:tl2.best);
+      var s2=scoreFor(t2,ans2===optsFor(t2).ans,q),ok2=s2.ok;
+      res={mode:'B',actor:t2,ans:ans2,ok:ok2,delta:{},tags:s2.tags,ts:now()};
+      if(ok2){res.delta[t2]=s2.gain;res.delta[other(t2)]=-scoreFor(other(t2),false,q).loss;}
+      else {res.delta[t2]=-s2.loss;
         // 對手補救
         ref.update({'meta/mode':'A','meta/actor':other(t2),'meta/rescue':true,'meta/submit':null,
           'meta/endsAt':now()+15000,'votes':null,'result':null,'rescueNote':{from:t2,wrongAns:ans2,ts:now()}});
@@ -574,15 +766,22 @@ function judge(){
       }
     } else {
       // 30 秒都沒人送出：兩隊各自以最高票判定
-      var rr=tally('r'),bb=tally('b');
-      var okR=rr.best===q.answer, okB=bb.best===q.answer;
-      res={mode:'B',actor:null,ans:q.answer,ok:okR||okB,delta:{},both:true,
-           ansR:rr.best,ansB:bb.best,ts:now()};
-      if(okR&&!okB){res.delta.r=SC[q.difficulty];res.delta.b=-(teamOf('b').bet||0);}
-      else if(okB&&!okR){res.delta.b=SC[q.difficulty];res.delta.r=-(teamOf('r').bet||0);}
-      else if(okR&&okB){res.delta.r=SC[q.difficulty];res.delta.b=SC[q.difficulty];}
+      var sR=scoreFor('r',tally('r').best===optsFor('r').ans,q),
+          sB=scoreFor('b',tally('b').best===optsFor('b').ans,q);
+      var okR=sR.ok,okB=sB.ok;
+      res={mode:'B',actor:null,ans:optsFor(dispTeam()).ans,ok:okR||okB,delta:{},both:true,
+           tags:sR.tags.concat(sB.tags),ansR:tally('r').best,ansB:tally('b').best,ts:now()};
+      if(okR&&!okB){res.delta.r=sR.gain;res.delta.b=-sB.loss;}
+      else if(okB&&!okR){res.delta.b=sB.gain;res.delta.r=-sR.loss;}
+      else if(okR&&okB){res.delta.r=sR.gain;res.delta.b=sB.gain;}
       else {res.delta.r=0;res.delta.b=0;}
     }
+  }
+  // 背鍋俠：獎懲轉嫁給對手
+  var sc=R().scape;
+  if(sc&&sc.from&&res.delta[sc.from]){
+    var mv=res.delta[sc.from];res.delta[sc.from]=0;
+    res.delta[sc.to]=(res.delta[sc.to]||0)+mv;res.scape=sc;
   }
   var u={};u['result']=res;u['meta/phase']='result';u['meta/endsAt']=now()+10000;
   ['r','b'].forEach(function(t){
@@ -599,6 +798,8 @@ function lockBet(){ if(!amLeader())return; var t=myTeam();
   var u={};u['teams/'+t+'/bet']=teamOf(t).bet||0;u['teams/'+t+'/betLocked']=true;ref.update(u); }
 function vote(i){
   var m=S.meta;if(m.phase!=='quiz')return;
+  var mo=R().mole;
+  if(mo&&mo.uid===uid){ ref.child('round/mole/ans').set(i); return; }   // 內鬼的鬼票
   if(myTeam()==='spec')return;
   if(m.mode==='A'&&m.actor!==myTeam())return;
   ref.child('votes/'+uid).set(i);
@@ -611,6 +812,156 @@ function submitAnswer(){
     return {team:t,uid:uid,ans:tl.best,ts:now()};
   }).then(function(r){ if(r.committed&&isHost()) judge(); });  // 非房主：房主的 hostTick 會接手
 }
+/* ================= 功能卡系統 ================= */
+var CARDS=[
+ {id:'x2',    n:'雙倍領悟',            r:'s',ty:'道具',d:'本題本隊得分 ×2。',                                 w:'prep',      who:'actor',note:'不影響扣分'},
+ {id:'bullet',n:'子彈時間',            r:'s',ty:'道具',d:'本回合作答時間 +20 秒。',                           w:'prep|quiz', who:'actor',noBuzz:1},
+ {id:'hand25',n:'借你的手',            r:'s',ty:'道具',d:'本回合隊長票權 1.5 → 2.5 票。',                     w:'prep',      who:'actor'},
+ {id:'half',  n:'打個折',              r:'s',ty:'道具',d:'本回合答錯只扣一半下注分。',                         w:'prep|quiz', who:'actor'},
+ {id:'reroll',n:'換一題',              r:'s',ty:'道具',d:'同領域重抽一題，難度重新隨機。',                     w:'prep',      who:'actor'},
+ {id:'steal', n:'拿來吧你',            r:'g',ty:'道具',d:'偷走對手的一張卡片。',                               w:'prep',      who:'any',tg:'card',note:'偷來的卡這回合不能用'},
+ {id:'blind', n:'天黑請閉眼',          r:'g',ty:'道具',d:'對手本回合作答時，隨機遮掉一個選項。',               w:'prep',      who:'any',note:'有機率遮到正解'},
+ {id:'pino',  n:'皮諾可 這個直接電死', r:'g',ty:'道具',d:'刪除自己的一個錯誤選項。',                           w:'quiz',      who:'actor',note:'得分不變'},
+ {id:'rush',  n:'時間快到囉',          r:'g',ty:'道具',d:'作答中的隊伍時間 −10 秒。',                          w:'quiz',      who:'notactor'},
+ {id:'expert',n:'這我老熟了',          r:'g',ty:'強化',d:'指定一個領域，本隊該領域得分永久 +30%。',            w:'prep',      who:'any',tg:'cat',note:'整場有效'},
+ {id:'risk',  n:'投資風險有賺有賠',    r:'g',ty:'強化',d:'本場剩餘回合，本隊加分與扣分幅度都 +50%。',          w:'prep',      who:'any',note:'雙面刃，不可取消'},
+ {id:'lucky', n:'這次算你僥倖',        r:'g',ty:'道具',d:'本次作答直接判定答對，但得分 −80%。',                w:'quiz',      who:'actor',note:'搶答回合視為搶答成功'},
+ {id:'nodie', n:'我不會死!!!!',        r:'p',ty:'道具',d:'本題就算答錯也不扣分。',                             w:'prep|quiz', who:'actor'},
+ {id:'mole',  n:'我是內鬼',            r:'p',ty:'道具',d:'隨機化身成作答隊的一名成員，用他的頭像投下 1 票。',  w:'quiz',      who:'notactor',note:'模仿到隊長時鬼票仍只算 1 票'},
+ {id:'hat',   n:'帽子戲法',            r:'p',ty:'道具',d:'對手本回合的選項增加到 8 個。',                       w:'prep',      who:'any',note:'假選項取自同領域其他題目'},
+ {id:'chow',  n:'周潤發',              r:'p',ty:'道具',d:'轉盤決定倍率，本題無論對錯都乘上它。',               w:'prep',      who:'actor',note:'0.2×–2.5×，期望值 1.2'},
+ {id:'bye',   n:'say goodbye',         r:'p',ty:'道具',d:'選一名本隊隊員，與對手隨機交換一名隊員。',           w:'prep',      who:'any',tg:'mate',note:'不可交換隊長，回合結束才生效'},
+ {id:'garble',n:'文盲禁區',            r:'p',ty:'道具',d:'對手本回合的選項文字全變亂碼 5 秒。',                 w:'prep',      who:'any'},
+ {id:'swap',  n:'右手換盾 左手換劍',   r:'p',ty:'道具',d:'立即與對手交換分數。',                                w:'prep',      who:'any',note:'過半回合才解鎖，負分也照換'},
+ {id:'scape', n:'背鍋俠',              r:'p',ty:'道具',d:'本題無論答對答錯，獎懲都由對手承擔。',               w:'quiz',      who:'actor',note:'答對加分也算他的'}
+];
+var CMAP={};CARDS.forEach(function(c){CMAP[c.id]=c;});
+var RAR={s:{n:'銀色',c:'#CBD5E6'},g:{n:'金色',c:'#FFC93B'},p:{n:'稜彩',c:'#B84DFF'}};
+var CHOW=[0.2,0.3,0.4,0.5,0.5,0.7,0.8,0.8,1,1,1,1.2,1.2,1.5,1.5,1.8,1.8,2,2,2.5];
+var GARB='▓▒░※§¤◇◆♦∷⌇⍜⎔⏣';
+
+function hands(){return (S&&S.cards&&S.cards.hands)||{};}
+function myHand(){return hands()[uid]||null;}
+function teamHands(t){var h=hands(),o=[];for(var k in h){var p=(S.players||{})[k];
+  if(p&&p.team===t)o.push({uid:k,id:h[k],name:p.name});}return o;}
+function anyHands(){for(var k in hands()){if((S.players||{})[k])return true;}return false;}
+function R(){return S.round||{};}
+function RT(t){return R()[t]||{};}
+function BF(t){return (S.buffs&&S.buffs[t])||{};}
+function isActorTeam(t){var m=S.meta;return m.mode==='B'?true:(m.actor===t);}
+function swapUnlock(){return Math.floor((S.meta.max||12)/2)+1;}
+
+/* 帽子戲法：把選項擴成 8 個 */
+function hat8(t){
+  var q=S.q,base=(q.options||[]).slice(),ans=q.answer,cor=base[ans];
+  var pool=[];
+  QB.forEach(function(x){ if(x.id===q.id||x.category!==q.category)return;
+    x.options.forEach(function(o,i){ if(i!==x.answer&&base.indexOf(o)<0&&pool.indexOf(o)<0)pool.push(o); }); });
+  if(pool.length<4)QB.forEach(function(x){ if(x.id===q.id)return;
+    x.options.forEach(function(o,i){ if(i!==x.answer&&base.indexOf(o)<0&&pool.indexOf(o)<0)pool.push(o); }); });
+  pool.sort(function(){return Math.random()-.5;});
+  var full=base.concat(pool.slice(0,4));
+  for(var i=full.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=full[i];full[i]=full[j];full[j]=tmp;}
+  return {team:t,opts:full,ans:full.indexOf(cor)};
+}
+/* 這一隊看到的選項組（帽子戲法會換掉） */
+function optsFor(t){
+  var q=S.q||{},h=R().hat;
+  if(h&&h.team===t&&h.opts)return {opts:h.opts,ans:h.ans};
+  return {opts:q.options||[],ans:q.answer};
+}
+/* 現在我能不能點選項（每次點擊即時判斷，不能被舊 closure 綁死） */
+function canAnsNow(){
+  var m=S.meta||{},mine=myTeam(),mo=R().mole;
+  if(m.phase!=='quiz')return false;
+  if(mo&&mo.uid===uid)return true;            // 內鬼投鬼票
+  if(mine==='spec')return false;
+  return (m.mode==='B')||(m.actor===mine);
+}
+function dispTeam(){
+  var m=S.meta,mine=myTeam();
+  if(mine==='spec')return m.actor||'r';
+  return m.mode==='B'?mine:(m.actor||mine);
+}
+
+/* ---- 可不可以用 ---- */
+function cardState(id){
+  var c=CMAP[id];if(!c)return {ok:false,why:'未知的卡片'};
+  var m=S.meta,t=myTeam(),ph=m.phase;
+  if(t==='spec')return {ok:false,why:'觀戰者不能使用卡片'};
+  if(ph!=='prep'&&ph!=='quiz')return {ok:false,why:'現在不是可以出牌的階段'};
+  if(RT(t).used)return {ok:false,why:'你們這回合已經用掉一張卡了'};
+  if(R().stolen&&R().stolen[uid]===id)return {ok:false,why:'剛偷來的卡，這回合不能用'};
+  var act=isActorTeam(t);
+  if(c.who==='actor'&&!act)return {ok:false,why:'這回合不是你們答題'};
+  if(c.who==='notactor'&&act)return {ok:false,why:'這張只能在別隊作答時使用'};
+  if(c.noBuzz&&m.mode==='B')return {ok:false,why:'搶答回合不能用這張'};
+  if(c.w.split('|').indexOf(ph)<0)
+    return {ok:false,why:ph==='prep'?'這張要等看到題目（作答階段）才能用':'這張只能在準備階段用'};
+  var sz=teamMembers(t).length;
+  if(c.id==='bye'&&sz<2)return {ok:false,why:'你們只有 1 個人，換走就沒人了',discard:true};
+  if(c.id==='hand25'&&sz<2)return {ok:false,why:'你們只有 1 個人，多數決本來就是你決定',discard:true};
+  if(c.id==='bye'&&teamMembers(other(t)).filter(function(x){return !x.p.leader;}).length<1)
+    return {ok:false,why:'對手沒有可以被交換的隊員（隊長不可交換）',discard:true};
+  if(c.id==='swap'&&(m.round||1)<swapUnlock())
+    return {ok:false,why:'第 '+swapUnlock()+' 回合才解鎖（現在第 '+(m.round||1)+' 回合）'};
+  if(c.id==='steal'&&!teamHands(other(t)).length)return {ok:false,why:'對手手上沒有卡可以偷'};
+  if(c.id==='expert'&&Object.keys(BF(t).cat||{}).length>=7)
+    return {ok:false,why:'七個領域你們都指定過了',discard:true};
+  if(c.id==='mole'&&!teamMembers(m.actor||other(t)).filter(function(x){return x.p.online;}).length)
+    return {ok:false,why:'對方沒有人在線可以模仿'};
+  if(c.id==='pino'){var O=optsFor(t);if(O.opts.length<3)return {ok:false,why:'選項不足，無法再刪'};}
+  return {ok:true};
+}
+
+/* ---- 發動 ---- */
+function useCard(id,arg){
+  var st=cardState(id);if(!st.ok){bad(st.why);return;}
+  var c=CMAP[id],t=myTeam(),m=S.meta,u={},O=optsFor(t),OO=optsFor(other(t));
+  u['cards/hands/'+uid]=null;
+  u['round/'+t+'/used']=true;
+  u['meta/fx']={id:id,by:(myP()||{}).name||'',team:t,ts:now()+Math.random()};
+  if(id==='x2')     u['round/'+t+'/x2']=true;
+  if(id==='hand25') u['round/'+t+'/hand25']=true;
+  if(id==='half')   u['round/'+t+'/half']=true;
+  if(id==='nodie')  u['round/'+t+'/nodie']=true;
+  if(id==='lucky')  u['round/'+t+'/lucky']=true;
+  if(id==='risk')   u['buffs/'+t+'/risk']=true;
+  if(id==='expert') u['buffs/'+t+'/cat/'+arg]=true;
+  if(id==='reroll') u['round/reroll']=t;
+  if(id==='garble') u['round/garble']={team:other(t)};
+  if(id==='scape')  u['round/scape']={from:t,to:other(t)};
+  if(id==='hat')    u['round/hat']=hat8(other(t));
+  if(id==='chow')   u['round/'+t+'/chow']=CHOW[Math.floor(Math.random()*CHOW.length)];
+  if(id==='bullet'){u['round/'+t+'/bullet']=true;
+    if(m.phase==='quiz'&&m.endsAt)u['meta/endsAt']=m.endsAt+20000;}
+  if(id==='rush'&&m.endsAt) u['meta/endsAt']=Math.max(now()+400,m.endsAt-10000);
+  if(id==='blind'){var n=OO.opts.length||4;u['round/blind']={team:other(t),hide:Math.floor(Math.random()*n)};}
+  if(id==='pino'){var wr=[];O.opts.forEach(function(o,i){if(i!==O.ans)wr.push(i);});
+    u['round/'+t+'/pino']=wr[Math.floor(Math.random()*wr.length)];}
+  if(id==='swap'){var a=teamOf(t).score||0,b2=teamOf(other(t)).score||0;
+    u['teams/'+t+'/score']=b2;u['teams/'+other(t)+'/score']=a;}
+  if(id==='steal'){var v=teamHands(other(t)).filter(function(x){return x.uid===arg;})[0];
+    if(!v){bad('那張卡已經不在了');return;}
+    u['cards/hands/'+arg]=null;u['cards/hands/'+uid]=v.id;u['round/stolen/'+uid]=v.id;}
+  if(id==='mole'){var pool=teamMembers(m.actor).filter(function(x){return x.p.online;});
+    var as=pool[Math.floor(Math.random()*pool.length)];
+    u['round/mole']={uid:uid,team:m.actor,asUid:as.uid,asName:as.p.name,ans:-1};}
+  if(id==='bye'){u['round/bye']={uid:arg,from:t,to:other(t)};}
+  ref.update(u);
+  fxPlay(id);closeSheet();
+}
+function discardCard(id){
+  var u={};u['cards/hands/'+uid]=null;u['cards/pool/'+id]=true;
+  ref.update(u);tone(240,.12,'triangle',.04);buzz(20);closeSheet();
+}
+function bad(msg){
+  net(msg,true);setTimeout(function(){net('');},2600);
+  tone(150,.16,'square',.05);buzz(20);
+  var e=$('handbar').querySelector('.hcard');
+  if(e){e.classList.add('shake');setTimeout(function(){e.classList.remove('shake');},320);}
+}
+
 /* ---- 渲染 ---- */
 var lastPhase='',ringTimer=null;
 function render(){
@@ -673,13 +1024,17 @@ function renderGame(){
       '<span class="val'+((T.score||0)<0?' neg':'')+'">'+fmt(T.score||0)+'</span></div>';
   });
   $('scoreBox').innerHTML=sh;
-  ['blkReveal','blkBet','blkBid','blkQuiz','blkResult'].forEach(function(i){$(i).classList.add('hide');});
+  ['blkReveal','blkBet','blkBid','blkPrep','blkDraw','blkQuiz','blkResult'].forEach(function(i){$(i).classList.add('hide');});
   var ph=m.phase;
   if(ph==='reveal')   viewReveal();
   else if(ph==='bet') viewBet();
   else if(ph==='bid') viewBid();
+  else if(ph==='prep')viewPrep();
+  else if(ph==='draw')viewDraw();
   else if(ph==='quiz')viewQuiz();
   else if(ph==='result')viewResult();
+  renderHand();cardLog();watchFx();
+  if(sheetOpen&&(ph!=='prep'&&ph!=='quiz'))closeSheet();
   tickCountdown();
   lastPhase=ph;
 }
@@ -692,12 +1047,12 @@ function tickCountdown(){
   if(m.phase==='result'){var rh=$('resHint');
     if(rh)rh.textContent=isHost()?('不按的話 '+s+' 秒後自動進下一回合'):('下一回合倒數 '+s+' 秒…');}
 }
-setInterval(function(){try{tickCountdown();ringTick();}catch(e){}},250);
+setInterval(function(){try{tickCountdown();ringTick();garbleTick();}catch(e){}},250);
 
 function stage(lb,sb,turn){$('stLb').textContent=lb;$('stSb').textContent=sb||'';
   $('stage').classList.toggle('turn',!!turn);}
 function viewReveal(){
-  $('blkReveal').classList.remove('hide');
+  $('blkReveal').classList.remove('hide');$('opts').dataset.sig='';
   var q=S.q||{};
   stage('公布領域','看清楚了再決定要押多少');
   if(lastPhase!=='reveal'){
@@ -817,22 +1172,35 @@ function turnbar(){
 function viewQuiz(){
   $('blkQuiz').classList.remove('hide');dbadge();turnbar();
   var m=S.meta,q=S.q,mine=myTeam(),spec=(mine==='spec');
-  var canAns=(!spec)&&((m.mode==='B')||(m.actor===mine));
-  if(lastPhase!=='quiz'||$('qText').textContent!==q.question){
+  var canAns=canAnsNow();
+  var DT=dispTeam(),OPT=optsFor(DT),mo=R().mole,iMole=!!(mo&&mo.uid===uid);
+  if(iMole)canAns=true;
+  var sig=q.question+'|'+OPT.opts.length+'|'+(R().hat?'h':'')+'|'+m.round;
+  if($('opts').dataset.sig!==sig){
+    $('opts').dataset.sig=sig;
     $('qText').textContent=q.question;
-    var h='';q.options.forEach(function(o,i){
-      h+='<button class="opt" data-i="'+i+'"><span class="idx">'+'ABCD'[i]+'</span><span class="txt">'+o+
+    var h='';OPT.opts.forEach(function(o,i){
+      h+='<button class="opt" data-i="'+i+'"><span class="idx">'+'ABCDEFGH'[i]+'</span><span class="txt">'+o+
          '</span><span class="avs" id="av'+i+'"></span></button>';});
     $('opts').innerHTML=h;
     Array.prototype.forEach.call($('opts').children,function(b){
-      b.addEventListener('click',function(){ if(!canAns)return; vote(parseInt(b.dataset.i,10));tone(420+parseInt(b.dataset.i,10)*90,.07);buzz(10); });
+      b.addEventListener('click',function(){
+        var i=parseInt(b.dataset.i,10);
+        if(b.classList.contains('gone')||b.classList.contains('masked')){bad('這個選項已經被卡片封住了');return;}
+        if(!canAnsNow())return; vote(i);tone(420+i*70,.07);buzz(10); });
     });
     startRing();
   }
+  var bl=R().blind,pn=RT(DT).pino;
+  Array.prototype.forEach.call($('opts').children,function(b,i){
+    b.classList.toggle('masked',!!(bl&&bl.team===DT&&bl.hide===i));
+    b.classList.toggle('gone',pn===i);
+  });
+  garbleTick();
   stage(m.mode==='B'?'搶答對決':'作答中',
         canAns?(m.mode==='B'?'隊長按送出就定案':'全員選完就直接對答案'):'你們這回合只能看');
   var votes=S.votes||{};
-  [0,1,2,3].forEach(function(i){var el=$('av'+i);if(el)el.innerHTML='';});
+  [0,1,2,3,4,5,6,7].forEach(function(i){var el=$('av'+i);if(el)el.innerHTML='';});
   for(var k in votes){
     var p=S.players[k];if(!p)continue;var v=votes[k];if(v==null||v<0)continue;
     if(!spec){
@@ -844,12 +1212,17 @@ function viewQuiz(){
     sp.className='av '+TC[p.team].cls+(p.leader?' cap':'');sp.textContent=p.name.slice(0,1);
     el2.appendChild(sp);
   }
+  if(mo&&mo.ans!=null&&mo.ans>=0&&(spec||mo.team===mine)){
+    var eg=$('av'+mo.ans);
+    if(eg){var g=document.createElement('span');
+      g.className='av '+TC[mo.team].cls;g.textContent=(mo.asName||'?').slice(0,1);eg.appendChild(g);}
+  }
   Array.prototype.forEach.call($('opts').children,function(b,i){
     b.classList.toggle('sel',votes[uid]===i);
     b.disabled=!canAns;
   });
   if(spec){
-    var sr=tally('r'),sb=tally('b'),fmtT=function(x){var o=[];for(var i=0;i<4;i++)if(x.w[i]>0)o.push('ABCD'[i]+' '+x.w[i]);return o.join(' ／ ')||'—';};
+    var sr=tally('r'),sb=tally('b'),fmtT=function(x){var o=[];for(var i=0;i<8;i++)if(x.w[i]>0)o.push('ABCDEFGH'[i]+' '+x.w[i]);return o.join(' ／ ')||'—';};
     $('voteTxt').textContent='紅 '+fmtT(sr);
     $('oppTxt').textContent='藍 '+fmtT(sb);
     $('submit').classList.add('hide');
@@ -858,7 +1231,7 @@ function viewQuiz(){
     return;
   }
   var tl=tally(m.mode==='B'?mine:(m.actor||mine)),s=[];
-  for(var i=0;i<4;i++)if(tl.w[i]>0)s.push('ABCD'[i]+' '+tl.w[i]);
+  for(var i=0;i<8;i++)if(tl.w[i]>0)s.push('ABCDEFGH'[i]+' '+tl.w[i]);
   $('voteTxt').textContent=s.join(' ／ ')||'—';
   if(m.mode==='B'){
     $('oppTxt').textContent='';
@@ -871,6 +1244,165 @@ function viewQuiz(){
   }
 }
 $('submit').addEventListener('click',function(){submitAnswer();tone(196,.26,'sine',.07);buzz(30);});
+/* ---- 手牌與卡片介面 ---- */
+var sheetOpen=null,lastFx=0;
+function rarCls(id){return 'r-'+(CMAP[id]?CMAP[id].r:'s');}
+function renderHand(){
+  var bar=$('handbar'),ph=(S.meta||{}).phase;
+  var show=(ph==='prep'||ph==='quiz'||ph==='result'||ph==='draw');
+  var id=myHand();
+  if(!show||myTeam()==='spec'||!id){ bar.classList.add('hide'); return; }
+  bar.classList.remove('hide');
+  var c=CMAP[id],st=cardState(id);
+  bar.className='handbar '+rarCls(id);
+  bar.innerHTML='<span class="lb">你的手牌</span>'+
+    '<div class="hcard'+(st.ok?'':' lock')+'"><span class="gem"></span>'+
+    '<span class="nm">'+c.n+'</span><span class="tg">'+(st.ok?'可使用 ▸':'⃠ 現在不能用')+'</span></div>';
+  bar.querySelector('.hcard').onclick=function(){ openSheet(id); };
+}
+function closeSheet(){ $('sheetHost').innerHTML=''; sheetOpen=null; }
+function openSheet(id){
+  var c=CMAP[id],st=cardState(id),t=myTeam();
+  sheetOpen=id;
+  var h='<div class="sheet '+rarCls(id)+'" id="sheetBg"><div class="pane">'+
+    '<div class="rr">'+RAR[c.r].n+' · '+c.ty+'</div><h3>'+c.n+'</h3>'+
+    '<div class="ds">'+c.d+'</div>'+
+    '<div class="mt">時機 '+c.w.split('|').map(function(x){return x==='prep'?'準備':'作答';}).join('／')+
+      ' · '+(c.who==='actor'?'限答題方':(c.who==='notactor'?'限非答題方':'任何隊'))+
+      (c.note?' · '+c.note:'')+'</div>';
+  if(!st.ok) h+='<div class="why">⃠ '+st.why+'</div>';
+  h+='<div class="acts" id="sheetActs"></div></div></div>';
+  $('sheetHost').innerHTML=h;
+  $('sheetBg').addEventListener('click',function(e){ if(e.target.id==='sheetBg')closeSheet(); });
+  var acts=$('sheetActs');
+  function btn(label,cls,fn){var b=document.createElement('button');b.className='btn '+(cls||'');
+    b.innerHTML=label;b.addEventListener('click',fn);acts.appendChild(b);return b;}
+  if(st.ok&&c.tg==='card'){
+    var box=document.createElement('div');box.className='pick';
+    box.innerHTML='<div style="width:100%;font-size:12.5px;color:var(--dim)">對手手牌（點一張偷走）</div>';
+    teamHands(other(t)).forEach(function(x){
+      var b=document.createElement('button');b.textContent=CMAP[x.id].n+' · '+x.name;
+      b.addEventListener('click',function(){useCard(id,x.uid);});box.appendChild(b);});
+    acts.appendChild(box);
+  } else if(st.ok&&c.tg==='cat'){
+    var box2=document.createElement('div');box2.className='pick';
+    box2.innerHTML='<div style="width:100%;font-size:12.5px;color:var(--dim)">選一個領域，本隊該領域永久 +30%</div>';
+    var had=BF(t).cat||{};
+    Object.keys(ICON).forEach(function(k){
+      var b=document.createElement('button');b.textContent=ICON[k]+' '+k;
+      if(had[k]){b.disabled=true;b.style.opacity=.35;b.textContent+=' ✓';}
+      else b.addEventListener('click',function(){useCard(id,k);});
+      box2.appendChild(b);});
+    acts.appendChild(box2);
+  } else if(st.ok&&c.tg==='mate'){
+    var box3=document.createElement('div');box3.className='pick';
+    box3.innerHTML='<div style="width:100%;font-size:12.5px;color:var(--dim)">選一名本隊隊員送去對面（隊長不可交換）</div>';
+    teamMembers(t).filter(function(x){return !x.p.leader;}).forEach(function(x){
+      var b=document.createElement('button');b.textContent=x.p.name+(x.uid===uid?'（你自己）':'');
+      b.addEventListener('click',function(){useCard(id,x.uid);});box3.appendChild(b);});
+    acts.appendChild(box3);
+  } else if(st.ok){
+    btn('發動<small>'+c.n+'</small>','gold',function(){useCard(id);});
+  }
+  if(st.discard) btn('丟棄這張<small>空出手牌，之後可以收新的卡</small>','ghost',function(){discardCard(id);});
+  btn('關閉','ghost',closeSheet);
+}
+/* 發動特效 */
+function fxPlay(id){
+  var c=CMAP[id];if(!c)return;
+  var host=$('fxHost');
+  host.innerHTML='<div class="fxl '+rarCls(id)+'"><div class="sweep"></div>'+
+    '<div class="fnm">'+c.n+'</div><div class="fby">'+RAR[c.r].n.toUpperCase()+' ACTIVATED</div></div>';
+  if(c.r==='s'){tone(1500,.06,'square',.03);buzz(10);}
+  else if(c.r==='g'){tone(880,.10);setTimeout(function(){tone(1320,.20);},70);buzz(25);}
+  else{tone(110,.5,'sawtooth',.05);tone(660,.14);setTimeout(function(){tone(990,.16);},110);
+       setTimeout(function(){tone(1480,.3);},230);buzz([40,60,40]);}
+  setTimeout(function(){host.innerHTML='';},c.r==='p'?1500:(c.r==='g'?950:600));
+}
+function watchFx(){
+  var f=(S.meta||{}).fx;if(!f||!f.ts)return;
+  if(f.ts===lastFx)return;
+  var first=(lastFx===0);lastFx=f.ts;if(first)return;
+  fxPlay(f.id);
+}
+function cardLog(){
+  var f=(S.meta||{}).fx,sn=(S.meta||{}).swapNote,h=[];
+  if(f&&CMAP[f.id])h.push('<b>'+TC[f.team].name+'</b> 發動了 <b>'+CMAP[f.id].n+'</b>'+(f.by?'（'+f.by+'）':''));
+  var mo=R().mole;if(mo&&mo.asName)h.push('有人化身成 <b>'+mo.asName+'</b> 投了一票');
+  var by=R().bye;if(by)h.push('say goodbye 已預約，本回合結束後換人');
+  if(sn&&S.meta.round<=1+0)h.push('');
+  $('cardlog').innerHTML=h.join('　·　');
+}
+/* ---- 準備階段 ---- */
+function viewPrep(){
+  $('blkPrep').classList.remove('hide');
+  var m=S.meta,q=S.q||{},t=myTeam(),rdy=R().ready||{},id=myHand();
+  $('prepbar').innerHTML='<span class="ic">'+(ICON[q.category]||'?')+'</span><span class="nm">'+(q.category||'—')+
+    '</span><span class="sb">'+(m.mode==='B'?'搶答回合':(TC[m.actor]?TC[m.actor].name+' 取得作答權':''))+
+    '<br>難度未公布</span>';
+  stage('準備階段','出牌或跳過，兩邊都好了就直接開始');
+  var ws='';
+  for(var k in hands()){var p=(S.players||{})[k];if(!p)continue;
+    ws+='<span class="pw'+(rdy[k]?' ok':'')+'">'+p.name+(rdy[k]?' 已就緒':' 考慮中…')+'</span>';}
+  $('prepWho').innerHTML=ws||'<span class="pw">沒有人持有卡片</span>';
+  var box=$('bidActs');box.innerHTML='';box.dataset.k='';
+  if(id&&!rdy[uid]&&t!=='spec'){
+    $('blkBid').classList.remove('hide');$('board').innerHTML='';$('log').innerHTML='';
+    var st=cardState(id);
+    var b1=document.createElement('button');b1.className='btn gold';
+    b1.innerHTML=(st.ok?'打開手牌<small>'+CMAP[id].n+'</small>':'查看手牌<small>'+st.why+'</small>');
+    b1.addEventListener('click',function(){openSheet(id);clink();});box.appendChild(b1);
+    var b2=document.createElement('button');b2.className='btn ghost';
+    b2.innerHTML='不使用卡片<small>跳過準備階段</small>';
+    b2.addEventListener('click',function(){ref.child('round/ready/'+uid).set(true);tone(300,.1);buzz(12);});
+    box.appendChild(b2);
+  }
+  $('prepHint').textContent=id?(rdy[uid]?'你已就緒，等其他持卡的人':'15 秒內決定，逾時視為不使用'):
+    '你手上沒有卡，等持卡的人決定';
+}
+/* ---- 抽卡（開卡包） ---- */
+function viewDraw(){
+  $('blkDraw').classList.remove('hide');
+  stage('抽卡','答對的隊伍有 20% 抽到功能卡');
+  var d=S.draw||{},h='';
+  ['r','b'].forEach(function(t){
+    var x=d[t];if(!x)return;
+    var cid=x.hit?x.card:null,c=cid?CMAP[cid]:null;
+    h+='<div><div class="pk '+(c?rarCls(cid):'')+'" id="pk_'+t+'"><div class="in">'+
+      '<div class="bk"><span>?</span></div>'+
+      '<div class="fa'+(c?'':' empty')+'">'+
+        (c?('<div class="rr">'+RAR[c.r].n+'</div><div class="nm">'+c.n+'</div><div class="ds">'+c.d+'</div>')
+          :('<div class="nm">沒有卡片</div><div class="ds">下次再來</div>'))+
+      '</div></div></div><div class="cap" style="color:'+TC[t].color+'">'+TC[t].name+
+      (x.to&&(S.players||{})[x.to]?' · '+S.players[x.to].name:(x.why||''))+'</div></div>';
+  });
+  $('packs').innerHTML=h;
+  if(lastPhase!=='draw'){
+    tone(300,.08);setTimeout(function(){tone(400,.08);},120);setTimeout(function(){tone(500,.08);},240);
+    setTimeout(function(){
+      ['r','b'].forEach(function(t){var e=$('pk_'+t);if(!e)return;e.classList.add('open');});
+      var got=false;['r','b'].forEach(function(t){if(d[t]&&d[t].hit)got=true;});
+      if(got){tone(784,.14);setTimeout(function(){tone(1175,.3);},130);buzz([25,40,25]);}
+      else {tone(220,.22,'triangle',.04);buzz(15);}
+    },1300);
+  }
+  $('drawHint').textContent='卡片一場遊戲只會出現一次；隊長不持卡，全隊最多 3 張';
+}
+
+/* 文盲禁區：靠 250ms 的計時器自己還原，不能等資料庫事件 */
+function garbleTick(){
+  if(!S||!S.meta||S.meta.phase!=='quiz')return;
+  var box=$('opts');if(!box||!box.children.length)return;
+  var m=S.meta,gb=R().garble,DT=dispTeam(),O=optsFor(DT);
+  var on=!!(gb&&gb.team===DT&&m.qAt&&(now()-m.qAt)<5000);
+  Array.prototype.forEach.call(box.children,function(b,i){
+    var tx=b.querySelector('.txt');if(!tx)return;
+    if(on){
+      if(!tx.dataset.o)tx.dataset.o=(O.opts[i]!=null?O.opts[i]:tx.textContent);
+      tx.textContent=String(O.opts[i]||'').replace(/\S/g,function(){return GARB[Math.floor(Math.random()*GARB.length)];});
+    } else if(tx.dataset.o){ tx.textContent=tx.dataset.o; delete tx.dataset.o; }
+  });
+}
 function startRing(){
   var C=2*Math.PI*25;$('ring').setAttribute('stroke-dasharray',String(C));
 }
@@ -878,6 +1410,7 @@ function ringTick(){
   if(!S||!S.meta||S.meta.phase!=='quiz')return;
   var m=S.meta;if(!m.endsAt)return;
   var total=(m.mode==='B'?30:(m.rescue?15:30));
+  ['r','b'].forEach(function(t){if(RT(t).bullet)total+=20;});
   var left=Math.max(0,(m.endsAt-now())/1000);
   var C=2*Math.PI*25;
   $('ring').setAttribute('stroke-dashoffset',String(C*(1-left/total)));
@@ -887,11 +1420,12 @@ function ringTick(){
 }
 function viewResult(){
   $('blkQuiz').classList.remove('hide');$('blkResult').classList.remove('hide');dbadge();turnbar();
-  var q=S.q,res=S.result||{},mine=myTeam();
+  var q=S.q,res=S.result||{},mine=myTeam(),RO=optsFor(dispTeam());
   Array.prototype.forEach.call($('opts').children,function(b,i){
-    b.disabled=true;b.classList.remove('sel');
-    b.classList.toggle('ok',i===q.answer);
-    b.classList.toggle('no',res.ans===i&&i!==q.answer);
+    b.disabled=true;b.classList.remove('sel');b.classList.remove('masked');b.classList.remove('gone');
+    var tx0=b.querySelector('.txt');if(tx0&&tx0.dataset.o){tx0.textContent=tx0.dataset.o;delete tx0.dataset.o;}
+    b.classList.toggle('ok',i===RO.ans);
+    b.classList.toggle('no',res.ans===i&&i!==RO.ans);
   });
   stage('本題結束','正解已標示在選項上');
   $('tn').textContent='—';$('timer').classList.remove('hot');
@@ -912,8 +1446,10 @@ function viewResult(){
     msg=res.ok?'對手答對了':'對手答錯了';
   }
   $('resultBox').innerHTML='<div class="center big" style="color:'+(d>0?'var(--green)':(d<0?'var(--red)':'var(--dim)'))+'">'+
-    msg+'</div><div class="center" style="font-size:13px;color:var(--dim);margin-top:2px">正解：'+q.options[q.answer]+
+    msg+'</div><div class="center" style="font-size:13px;color:var(--dim);margin-top:2px">正解：'+(RO.opts[RO.ans]||'—')+
     '　<b style="color:'+(d>0?'var(--green)':'var(--red)')+'">'+(d?((d>0?'+':'−')+fmt(Math.abs(d))):'±0')+'</b></div>'+
+    ((res.tags&&res.tags.length)?'<div class="center" style="font-family:var(--mono);font-size:10.5px;color:var(--gold);margin-top:6px">'+res.tags.join(' · ')+'</div>':'')+
+    (res.scape?'<div class="center" style="font-family:var(--mono);font-size:10.5px;color:#B84DFF;margin-top:4px">背鍋俠 · 獎懲轉嫁給 '+TC[res.scape.to].name+'</div>':'')+
     '<div class="expl">'+q.explain+'</div>';
   if(lastPhase!=='result'){ flash(d>0);
     if(d>0){tone(523,.12);setTimeout(function(){tone(659,.12);},90);setTimeout(function(){tone(784,.22);},180);buzz([20,40,20]);}
