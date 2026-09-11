@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>誰是知識王 · 連線診斷</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root{--void:#06070E;--hair:#ffffff14;--hair2:#ffffff26;--ink:#EAEEF8;--dim:#8C95AB;--dim2:#5C6479;
+    --cy:#22F5DC;--gold:#FFC93B;--green:#2FE39B;--red:#FF3D63;--vi:#B84DFF;
+    --disp:"Rajdhani","Noto Sans TC",system-ui,sans-serif;--body:"Noto Sans TC",system-ui,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--void);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7;
+    background-image:radial-gradient(900px 560px at 12% -6%,#0f3a3a 0%,transparent 60%),
+                     radial-gradient(820px 560px at 92% 4%,#2b1240 0%,transparent 62%);background-attachment:fixed}
+  .wrap{max-width:640px;margin:0 auto;padding:40px 18px 80px}
+  .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--cy);text-transform:uppercase}
+  h1{font-family:var(--disp);font-size:34px;font-weight:700;margin:8px 0 6px}
+  h1 b{color:var(--cy)}
+  .lead{color:var(--dim);font-size:14px;margin:0 0 24px}
+  .check{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--hair);border-radius:13px;
+    padding:13px 15px;margin-bottom:9px;background:linear-gradient(#0E1120,#0A0C16)}
+  .check .ic{font-family:var(--mono);font-size:15px;width:22px;text-align:center;padding-top:2px}
+  .check.wait .ic{color:var(--dim2)} .check.ok{border-color:#2FE39B55} .check.ok .ic{color:var(--green)}
+  .check.err{border-color:#FF3D6366;background:linear-gradient(#1c0d13,#120a0e)} .check.err .ic{color:var(--red)}
+  .check .t{font-family:var(--disp);font-size:16px;font-weight:700}
+  .check .d{font-size:12.5px;color:var(--dim);margin-top:2px;word-break:break-word}
+  .check .d code{font-family:var(--mono);font-size:11.5px;color:#9fe9df;background:#141830;border:1px solid var(--hair);
+    border-radius:4px;padding:1px 5px}
+  .sync{border:1px solid #1c4a48;border-radius:14px;padding:18px 20px;margin-top:20px;
+    background:linear-gradient(#0a1f22,#0a0f18)}
+  .sync h2{font-family:var(--disp);font-size:19px;margin:0 0 4px;color:var(--cy)}
+  .sync p{margin:0 0 12px;font-size:13px;color:#B6D9D4}
+  .big{font-family:var(--disp);font-size:44px;font-weight:700;text-align:center;color:var(--cy);
+    font-variant-numeric:tabular-nums;margin:6px 0}
+  .btn{border:1px solid #22F5DC55;border-radius:11px;padding:12px;cursor:pointer;font-family:var(--disp);
+    font-size:16px;font-weight:700;color:#B9FFF5;background:linear-gradient(#0b2e2c,#071c1d);width:100%;
+    box-shadow:0 0 26px -12px var(--cy)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .note{border-left:3px solid var(--gold);background:#17130a66;border-radius:0 11px 11px 0;padding:12px 15px;
+    margin-top:20px;font-size:13px;color:#F0E1BC}
+  .note b{color:var(--gold)}
+  footer{margin-top:28px;font-family:var(--mono);font-size:11px;color:var(--dim2);line-height:1.9}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">誰是知識王 · 開發準備 02</div>
+  <h1>連線<b>診斷</b></h1>
+  <p class="lead">這一頁不是遊戲，是用來確認 Firebase 設定有沒有做對。打開它會自動跑五項檢查，全部亮綠燈才代表連線地基沒問題。有任何一項紅燈，把那一行的文字整段貼給我。</p>
+
+  <div id="checks"></div>
+
+  <div class="sync" id="syncBox" style="display:none">
+    <h2>即時同步測試</h2>
+    <p>把這一頁<b>用兩個分頁（或手機再開一次）同時打開</b>，在任一邊按下按鈕，另一邊的數字應該在一秒內跟著跳。這代表多人連線真的會動。</p>
+    <div class="big" id="counter">—</div>
+    <button class="btn" id="bump">＋1</button>
+  </div>
+
+  <div class="note">
+    <b>這頁會寫入什麼？</b>只會在資料庫的 <code>rooms/_diag</code> 這個路徑寫一個計數器和時間戳，不影響任何遊戲資料。測完想清掉的話，到 Firebase 後台的 Realtime Database 把 <code>_diag</code> 那個節點刪掉就好。
+  </div>
+
+  <footer>
+    誰是知識王 · 連線診斷 v1<br>
+    專案 quiz-king-9dc0f · 資料庫 asia-southeast1（新加坡）
+  </footer>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+(function(){
+var CFG={
+  apiKey:"AIzaSyBIu1kRxK1I-hVc0smmpk26pryKxRkHFjw",
+  authDomain:"quiz-king-9dc0f.firebaseapp.com",
+  databaseURL:"https://quiz-king-9dc0f-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"quiz-king-9dc0f",
+  storageBucket:"quiz-king-9dc0f.firebasestorage.app",
+  messagingSenderId:"583617218167",
+  appId:"1:583617218167:web:73b2153ab6e94f88a3a872"
+};
+var STEPS=[
+  ['sdk','載入 Firebase SDK','從 Google 的 CDN 載入三個函式庫'],
+  ['init','初始化專案設定','確認 config 沒有打錯'],
+  ['auth','匿名登入','第 3 步的 Anonymous 有沒有開'],
+  ['write','寫入資料庫','第 4 步的安全規則有沒有貼對'],
+  ['read','讀回並即時監聽','確認雙向都通'],
+];
+var box=document.getElementById('checks'),els={};
+STEPS.forEach(function(s){
+  var d=document.createElement('div'); d.className='check wait';
+  d.innerHTML='<div class="ic">◌</div><div><div class="t">'+s[1]+'</div><div class="d">'+s[2]+'</div></div>';
+  box.appendChild(d); els[s[0]]=d;
+});
+function mark(k,ok,msg){
+  var d=els[k]; if(!d) return;
+  d.className='check '+(ok?'ok':'err');
+  d.querySelector('.ic').textContent=ok?'✓':'✕';
+  if(msg) d.querySelector('.d').innerHTML=msg;
+}
+function fail(k,e){
+  var code=(e&&(e.code||e.message))||String(e);
+  mark(k,false,'<b style="color:#FF8FA3">失敗</b>：<code>'+code+'</code>');
+}
+try{
+  if(!window.firebase||!firebase.initializeApp) throw new Error('SDK 沒有載入，可能是網路被擋或擴充套件阻擋');
+  mark('sdk',true,'版本 '+(firebase.SDK_VERSION||'compat'));
+}catch(e){ fail('sdk',e); return; }
+
+var app,auth,db;
+try{ app=firebase.initializeApp(CFG); auth=firebase.auth(); db=firebase.database();
+     mark('init',true,'專案 <code>'+CFG.projectId+'</code>'); }
+catch(e){ fail('init',e); return; }
+
+auth.signInAnonymously().then(function(r){
+  var uid=(r&&r.user&&r.user.uid)||auth.currentUser.uid;
+  mark('auth',true,'已取得匿名身分 <code>'+uid.slice(0,10)+'…</code>');
+  var ref=db.ref('rooms/_diag');
+  return ref.child('lastWrite').set(firebase.database.ServerValue.TIMESTAMP).then(function(){
+    mark('write',true,'成功寫入 <code>rooms/_diag/lastWrite</code>');
+    document.getElementById('syncBox').style.display='block';
+    ref.child('counter').on('value',function(snap){
+      var v=snap.val()||0;
+      document.getElementById('counter').textContent=v;
+      mark('read',true,'即時監聽中 · 目前計數 <code>'+v+'</code>');
+    },function(err){ fail('read',err); });
+    document.getElementById('bump').addEventListener('click',function(){
+      ref.child('counter').transaction(function(c){ return (c||0)+1; });
+    });
+  });
+}).catch(function(e){
+  if(e&&String(e.code||'').indexOf('auth/')===0) fail('auth',e);
+  else fail('write',e);
+});
+})();
+</script>
+</body>
+</html>
