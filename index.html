@@ -554,6 +554,7 @@ function hostTick(){
     if(ph==='bet'&&teamOf('r').betLocked&&teamOf('b').betLocked){ return revealBets(); }
     // 叫價：誰動完了就馬上換人，沒人還能動就直接進下一階段
     if(ph==='bid'){
+      if(m.bidAt&&now()-m.bidAt>45000) return finishBid();   // 保險絲：卡住就強制收尾
       if(!m.turn) return;                                   // 還在 1.6 秒揭示
       if(teamOf(m.turn).acted||teamOf(m.turn).passed) return advanceBid();
       return;
@@ -619,7 +620,7 @@ function startRound(){
 function startBet(){ setPhase('bet',15); }
 function revealBets(){
   if(S.meta.phase!=='bet')return;          // 防重入
-  ref.update({'meta/phase':'bid','meta/turn':null,'meta/endsAt':now()+1600});
+  ref.update({'meta/phase':'bid','meta/turn':null,'meta/endsAt':now()+1600,'meta/bidAt':now()});
 }
 /* 這一隊還有沒有合法動作？（加注 或 跟平）沒有的話就不該再叫他「維持」一次 */
 function bidOpts(t){
@@ -627,25 +628,46 @@ function bidOpts(t){
   TIERS.forEach(function(v){ if(v>=hi+500||(v===hi&&mine<opp)) o.push(v); });
   return o;
 }
-function canAct(t){ return !teamOf(t).passed && bidOpts(t).length>0; }
-function whoseTurn(){
+function canAct(t,forced){
+  if(t===forced||teamOf(t).passed)return false;
+  return bidOpts(t).length>0;
+}
+function whoseTurn(forced){
   var r=teamOf('r').bet||0,b=teamOf('b').bet||0,T=S.teams;
   if(r===b){                       // 同注：還能加注的人才輪得到；兩邊都頂到上限 → 直接搶答
-    if(!T.b.acted&&canAct('b'))return 'b';
-    if(!T.r.acted&&canAct('r'))return 'r';
+    if(!T.b.acted&&canAct('b',forced))return 'b';
+    if(!T.r.acted&&canAct('r',forced))return 'r';
     return null;
   }
   var trail=r<b?'r':'b';
-  return canAct(trail)?trail:null;
+  return canAct(trail,forced)?trail:null;
 }
-function advanceBid(){
-  var w=whoseTurn();
+/* 把叫價結果寫進同一個 update 物件，避免等資料庫回聲 */
+function bidResultInto(u){
+  var r=teamOf('r').bet||0,b=teamOf('b').bet||0,mode,actor;
+  if(r>b){mode='A';actor='r';}else if(b>r){mode='A';actor='b';}else{mode='B';actor=null;}
+  u['meta/mode']=mode;u['meta/actor']=actor;u['meta/turn']=null;u['meta/bidAt']=null;
+  if(anyHands()){ u['meta/phase']='prep'; u['meta/endsAt']=now()+15000; }
+  else          { u['meta/phase']='quiz'; u['meta/endsAt']=now()+30000; u['meta/qAt']=now(); }
+  return u;
+}
+function advanceBid(forced){
+  var w=whoseTurn(forced);
   if(!w) return finishBid();
   ref.update({'meta/turn':w,'meta/endsAt':now()+8000});
 }
 function bidTimeout(){
-  var t=S.meta.turn;if(!t)return advanceBid();
-  pass(t,true);
+  var t=S.meta.turn;
+  if(!t)return advanceBid();
+  if(!guard())return;
+  // 這一筆同時做三件事：判這隊維持、寫紀錄、決定下一手（或直接收尾）
+  var u={};
+  u['teams/'+t+'/passed']=true;u['teams/'+t+'/acted']=true;
+  u['bidLog/'+now()]={who:t,v:teamOf(t).bet||0,type:'timeout'};
+  var w=whoseTurn(t);
+  if(!w) bidResultInto(u);
+  else { u['meta/turn']=w;u['meta/endsAt']=now()+8000; }
+  ref.update(u);
 }
 function raise(t,v){
   var u={};u['teams/'+t+'/bet']=v;u['teams/'+t+'/acted']=true;u['teams/'+other(t)+'/acted']=false;
@@ -659,16 +681,12 @@ function pass(t,auto){
 }
 function finishBid(){
   if(!guard())return;
-  var r=teamOf('r').bet||0,b=teamOf('b').bet||0,mode,actor;
-  if(r>b){mode='A';actor='r';} else if(b>r){mode='A';actor='b';} else {mode='B';actor=null;}
-  var u={'meta/mode':mode,'meta/actor':actor,'meta/turn':null};
-  if(anyHands()){ u['meta/phase']='prep'; u['meta/endsAt']=now()+15000; }
-  else          { u['meta/phase']='quiz'; u['meta/endsAt']=now()+30000; }
-  ref.update(u);
+  ref.update(bidResultInto({}));
 }
 function startQuiz(){
   var m=S.meta,add=0;
   ['r','b'].forEach(function(t){ if(RT(t).bullet)add+=20000; });
+  if(!guard())return;
   ref.update({'meta/phase':'quiz','meta/endsAt':now()+(m.rescue?15000:30000)+add,
               'meta/qAt':now(),'round/ready':null});
 }
@@ -1376,7 +1394,7 @@ function viewDraw(){
       '</div></div></div><div class="cap" style="color:'+TC[t].color+'">'+TC[t].name+
       (x.to&&(S.players||{})[x.to]?' · '+S.players[x.to].name:(x.why||''))+'</div></div>';
   });
-  $('packs').innerHTML=h;
+  if(lastPhase!=='draw'||!$('packs').children.length) $('packs').innerHTML=h;
   if(lastPhase!=='draw'){
     tone(300,.08);setTimeout(function(){tone(400,.08);},120);setTimeout(function(){tone(500,.08);},240);
     setTimeout(function(){
@@ -1386,7 +1404,11 @@ function viewDraw(){
       else {tone(220,.22,'triangle',.04);buzz(15);}
     },1300);
   }
-  $('drawHint').textContent='卡片一場遊戲只會出現一次；隊長不持卡，全隊最多 3 張';
+  $('drawHint').textContent=(function(){
+    var d=S.draw||{},got=[];
+    ['r','b'].forEach(function(t){if(d[t]&&d[t].hit)got.push(TC[t].name);});
+    return got.length?(got.join('、')+'抽到卡片了！卡片一場只會出現一次')
+                     :'這次沒抽到 · 卡片一場只會出現一次，隊長不持卡，全隊最多 3 張';})();
 }
 
 /* 文盲禁區：靠 250ms 的計時器自己還原，不能等資料庫事件 */
@@ -1459,7 +1481,11 @@ function viewResult(){
   var lf=(S.meta.endsAt?Math.max(0,Math.ceil((S.meta.endsAt-now())/1000)):0);
   $('resHint').textContent=isHost()?('不按的話 '+lf+' 秒後自動進下一回合'):('下一回合倒數 '+lf+' 秒…');
 }
-$('next').addEventListener('click',function(){ if(isHost())startRound(); });
+$('next').addEventListener('click',function(){
+  if(!isHost())return;
+  _busy=0;                 // 房主主動按，不受節流擋住
+  afterResult();           // 先走抽卡，再由抽卡結束時開下一回合
+});
 function renderEnd(){
   $('s-game').classList.add('hide');$('s-lobby').classList.add('hide');$('s-end').classList.remove('hide');
   var ts=['r','b'].map(function(t){return {t:t,T:teamOf(t)};}).sort(function(a,b){return (b.T.score||0)-(a.T.score||0);});
