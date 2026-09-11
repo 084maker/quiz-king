@@ -64,7 +64,7 @@
   </div>
 
   <footer>
-    誰是知識王 · 連線診斷 v1<br>
+    誰是知識王 · 連線診斷 v2（紅燈會附修法）<br>
     專案 quiz-king-9dc0f · 資料庫 asia-southeast1（新加坡）
   </footer>
 </div>
@@ -102,9 +102,22 @@ function mark(k,ok,msg){
   d.querySelector('.ic').textContent=ok?'✓':'✕';
   if(msg) d.querySelector('.d').innerHTML=msg;
 }
+var FIXES={
+ 'auth/configuration-not-found':'<b>Authentication 服務還沒啟用。</b>到 Firebase 後台 → 建構 / Build → Authentication，按中央那顆<b>「開始使用 / Get started」</b>，再進「登入方式 / Sign-in method」把<b>匿名 / Anonymous</b> 打開並儲存。',
+ 'auth/operation-not-allowed':'<b>匿名登入沒有開。</b>Authentication → 登入方式 / Sign-in method → 找到<b>匿名 / Anonymous</b> → 打開開關 → 儲存。',
+ 'auth/api-key-not-valid':'<b>apiKey 打錯了。</b>回 Firebase 專案設定 → 你的應用程式，把 firebaseConfig 整段重新複製一次。',
+ 'auth/unauthorized-domain':'<b>這個網域沒被授權。</b>Authentication → 設定 / Settings → 已授權網域，把你的 <code>帳號.github.io</code> 加進去。',
+ 'PERMISSION_DENIED':'<b>安全規則沒貼對。</b>Realtime Database → 規則 / Rules，確認 rooms 底下是 <code>".read"/".write": "auth != null"</code>，貼完要按<b>發布</b>。',
+ 'permission-denied':'<b>安全規則沒貼對。</b>Realtime Database → 規則 / Rules，貼上規則後要按<b>發布</b>。',
+ 'database/url-not-found':'<b>databaseURL 不對。</b>確認網址結尾是 <code>asia-southeast1.firebasedatabase.app</code>，而不是預設的 firebaseio.com。'
+};
 function fail(k,e){
   var code=(e&&(e.code||e.message))||String(e);
-  mark(k,false,'<b style="color:#FF8FA3">失敗</b>：<code>'+code+'</code>');
+  var fix='';
+  for(var key in FIXES){ if(String(code).indexOf(key)>=0){ fix=FIXES[key]; break; } }
+  mark(k,false,'<b style="color:#FF8FA3">失敗</b>：<code>'+code+'</code>'+
+    (fix?'<div style="margin-top:8px;padding:10px 12px;border-left:3px solid #FFC93B;background:#17130a80;border-radius:0 8px 8px 0;color:#F0E1BC;font-size:12.5px;line-height:1.6">怎麼修：'+fix+'</div>'
+        :'<div style="margin-top:6px;color:#8C95AB">這個錯誤碼我沒遇過，整段貼給阿邊。</div>'));
 }
 try{
   if(!window.firebase||!firebase.initializeApp) throw new Error('SDK 沒有載入，可能是網路被擋或擴充套件阻擋');
