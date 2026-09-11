@@ -49,7 +49,7 @@
   .btn:disabled{opacity:.35;cursor:default;box-shadow:none}
   @media(prefers-reduced-motion:no-preference){.btn:active{transform:scale(.985)}}
 
-  .hud{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .hud{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-right:38px}
   .pill{font-family:var(--mono);font-size:10px;color:var(--dim);border:1px solid var(--hair);
     background:#0c0f1c;border-radius:20px;padding:4px 9px;white-space:nowrap}
   .pill b{color:var(--ink)}
@@ -165,6 +165,31 @@
     @keyframes revNm{from{opacity:0;letter-spacing:.4em;filter:blur(6px)}to{opacity:1;letter-spacing:.04em;filter:none}}
   }
   /* 下注時的領域條 */
+  /* 得分浮出 */
+  .dpop{position:fixed;z-index:58;pointer-events:none;font-family:var(--disp);font-size:23px;font-weight:700;
+    white-space:nowrap;text-shadow:0 2px 14px #000c;font-variant-numeric:tabular-nums;opacity:0}
+  .dpop.up{color:var(--green)} .dpop.dn{color:var(--red)} .dpop.zero{color:var(--dim)}
+  .delta{position:fixed;left:50%;top:26%;transform:translate(-50%,0);z-index:59;pointer-events:none;
+    font-family:var(--disp);font-size:42px;font-weight:700;opacity:0;white-space:nowrap;
+    text-shadow:0 4px 26px #000e;font-variant-numeric:tabular-nums;text-align:center}
+  .delta small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.18em;opacity:.75;margin-top:2px}
+  .srow .val.bump{animation:none}
+  @media(prefers-reduced-motion:no-preference){
+    .dpop.show{animation:dpop 1.6s cubic-bezier(.2,.85,.3,1) both}
+    @keyframes dpop{0%{opacity:0;transform:translate(-100%,10px) scale(.8)}
+      14%{opacity:1;transform:translate(-100%,0) scale(1.18)}
+      28%{transform:translate(-100%,-2px) scale(1)}
+      70%{opacity:1}
+      100%{opacity:0;transform:translate(-100%,-42px) scale(1)}}
+    .delta.show{animation:rise 1.7s cubic-bezier(.2,.85,.3,1) both}
+    @keyframes rise{0%{opacity:0;transform:translate(-50%,16px) scale(.86)}
+      16%{opacity:1;transform:translate(-50%,0) scale(1.1)}
+      30%{transform:translate(-50%,-2px) scale(1)}
+      72%{opacity:1}
+      100%{opacity:0;transform:translate(-50%,-48px) scale(1.02)}}
+    .srow .val.bump{animation:vbump .5s cubic-bezier(.2,.9,.3,1)}
+    @keyframes vbump{0%{transform:scale(1)}35%{transform:scale(1.16)}100%{transform:scale(1)}}
+  }
   .turnbar{border-radius:12px;padding:11px 10px;text-align:center;font-family:var(--disp);font-size:21px;
     font-weight:700;letter-spacing:.04em;border:1px solid var(--hair2);background:#0d101c;color:var(--dim)}
   .turnbar small{display:block;font-family:var(--mono);font-size:10px;font-weight:400;letter-spacing:.12em;
@@ -237,7 +262,8 @@
     padding:4px 10px;color:var(--dim)}
   .pw.ok{border-color:#2FE39B55;color:var(--green)}
   /* 開卡包 */
-  .packs{display:flex;gap:14px;justify-content:center;margin:6px 0}
+  .packs{display:flex;gap:14px;justify-content:center;align-items:flex-start;margin:6px 0;flex-wrap:wrap}
+  .pkw{width:112px;flex:0 0 112px;display:flex;flex-direction:column;align-items:center}
   .pk{width:112px;height:158px;perspective:800px}
   .pk .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.3,.9,.3,1)}
   .pk.open .in{transform:rotateY(180deg)}
@@ -252,7 +278,10 @@
   .pk .fa .ds{font-size:10px;color:var(--dim);line-height:1.4}
   .pk .fa.empty{border-color:var(--hair2);background:#0b0e18;box-shadow:none}
   .pk .fa.empty .nm{color:var(--dim2);font-size:15px}
-  .pk .cap{font-family:var(--mono);font-size:9.5px;text-align:center;margin-top:6px}
+  .pkw .cap{width:100%;font-family:var(--mono);font-size:9.5px;text-align:center;margin-top:7px;
+    line-height:1.45;word-break:break-word}
+  .pkw .cap b{display:block;font-size:11px;font-weight:700}
+  .pkw .cap span{color:var(--dim2)}
   @media(prefers-reduced-motion:no-preference){
     .pk.open .fa{animation:pkPop .5s .5s both}
     @keyframes pkPop{0%{filter:brightness(2.4)}100%{filter:none}}
@@ -286,6 +315,7 @@
 <body>
 <div class="amb"></div><div class="scan"></div>
 <div class="flash ok" id="flashOk"></div><div class="flash no" id="flashNo"></div>
+<div class="delta" id="delta"></div>
 <div id="netbar" class="status hide">連線中…</div>
 <button class="mute" id="mute" aria-label="音效">🔊</button>
 
@@ -395,7 +425,7 @@
     <div class="card" id="endStat" style="margin-top:8px"></div>
     <button class="btn" id="again" style="margin-top:12px">回到組隊大廳<small>重置分數，重新分隊</small></button>
   </section>
-<div id="qk-ver" style="position:fixed;right:6px;bottom:4px;font-family:var(--mono);font-size:9px;color:#3a4160;z-index:5;pointer-events:none">v1.0.2</div>
+<div id="qk-ver" style="position:fixed;right:6px;bottom:4px;font-family:var(--mono);font-size:9px;color:#3a4160;z-index:5;pointer-events:none">v1.0.4</div>
 </div>
 <div id="sheetHost"></div>
 <div id="fxHost"></div>
@@ -784,7 +814,7 @@ function afterResult(){
     any=true;
     var to=pickReceiver(t),fc=freeCards(),hit=(Math.random()<0.20)&&to&&fc.length;
     d[t]={hit:!!hit,card:hit?fc[Math.floor(Math.random()*fc.length)].id:null,to:to||null,
-          why:to?'':'（隊上沒有能收卡的人）'};
+          why:to?'':'手牌已滿'};
   });
   if(!any) return startRound();
   ref.update({'draw':d,'meta/phase':'draw','meta/endsAt':now()+5600});
@@ -1096,7 +1126,7 @@ function renderGame(){
     sh+='<div class="srow'+(mine?' me':'')+'"><span class="dot" style="background:'+TC[t].color+'"></span>'+
       '<span style="color:'+TC[t].color+'">'+TC[t].name+(mine?'（你）':'')+'</span>'+
       (m.phase!=='bet'&&T.bet?'<span class="mini">押 '+fmt(T.bet)+'</span>':'')+
-      '<span class="val'+((T.score||0)<0?' neg':'')+'">'+fmt(T.score||0)+'</span></div>';
+      '<span class="val'+(dispScore(t)<0?' neg':'')+'" id="val_'+t+'">'+fmt(dispScore(t))+'</span></div>';
   });
   $('scoreBox').innerHTML=sh;
   ['blkReveal','blkBet','blkBid','blkPrep','blkDraw','blkQuiz','blkResult'].forEach(function(i){$(i).classList.add('hide');});
@@ -1124,6 +1154,59 @@ function tickCountdown(){
 }
 setInterval(function(){try{tickCountdown();ringTick();garbleTick();}catch(e){}},250);
 
+/* ---- 得分滾動與浮出動畫 ---- */
+var roll={r:null,b:null};
+function dispScore(t){ return (roll[t]!=null)?roll[t]:(teamOf(t).score||0); }
+function paintScores(){
+  ['r','b'].forEach(function(t){var e=$('val_'+t);if(!e)return;
+    var v=dispScore(t);e.textContent=fmt(v);e.classList.toggle('neg',v<0);});
+}
+function rollScores(from,to){
+  if(roll.r!=null)return;
+  roll.r=from.r;roll.b=from.b;
+  var t0=Date.now(),D=950;
+  (function step(){
+    var k=Math.min(1,(Date.now()-t0)/D),e=1-Math.pow(1-k,3);
+    roll.r=Math.round(from.r+(to.r-from.r)*e);
+    roll.b=Math.round(from.b+(to.b-from.b)*e);
+    paintScores();
+    if(k<1)requestAnimationFrame(step);
+    else{roll.r=null;roll.b=null;paintScores();
+      ['r','b'].forEach(function(t){if(from[t]!==to[t]){var el=$('val_'+t);
+        if(el){el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');}}});}
+  })();
+}
+/* 每隊各自在自己那一列旁邊浮出 ±分數，中央再給自己隊伍一個大的 */
+function popDeltas(){
+  var res=S.result||{},dl=res.delta||{},mine=myTeam();
+  ['r','b'].forEach(function(t){
+    var d=dl[t]||0;
+    var el=$('val_'+t);if(!el)return;
+    var rc=el.getBoundingClientRect();
+    var p=document.createElement('div');
+    p.className='dpop '+(d>0?'up':(d<0?'dn':'zero'));
+    p.textContent=d?((d>0?'+':'−')+fmt(Math.abs(d))):'±0';
+    p.style.left=Math.round(rc.left-12)+'px';   // 落在「押注」與分數之間的空白，不蓋住數字
+    p.style.top=Math.round(rc.top-1)+'px';
+    document.body.appendChild(p);
+    setTimeout(function(){p.classList.add('show');},t==='r'?0:120);
+    setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},1900);
+  });
+  var md=(mine!=='spec')?(dl[mine]||0):0;
+  var big=$('delta');
+  if(mine==='spec'){
+    big.style.color='var(--dim)';
+    big.innerHTML='紅 '+((dl.r||0)>0?'+':((dl.r||0)<0?'−':'±'))+fmt(Math.abs(dl.r||0))+
+      '　藍 '+((dl.b||0)>0?'+':((dl.b||0)<0?'−':'±'))+fmt(Math.abs(dl.b||0))+
+      '<small>SPECTATOR</small>';
+  } else {
+    big.style.color=md>0?'var(--green)':(md<0?'var(--red)':'var(--dim)');
+    big.innerHTML=(md?((md>0?'+':'−')+fmt(Math.abs(md))):'±0')+
+      '<small>'+TC[mine].name+(md>0?' 得分':(md<0?' 扣分':' 沒有變動'))+'</small>';
+  }
+  big.classList.remove('show');void big.offsetWidth;big.classList.add('show');
+  setTimeout(function(){big.classList.remove('show');},1750);
+}
 function stage(lb,sb,turn){$('stLb').textContent=lb;$('stSb').textContent=sb||'';
   $('stage').classList.toggle('turn',!!turn);}
 function viewReveal(){
@@ -1443,13 +1526,15 @@ function viewDraw(){
   ['r','b'].forEach(function(t){
     var x=d[t];if(!x)return;
     var cid=x.hit?x.card:null,c=cid?CMAP[cid]:null;
-    h+='<div><div class="pk '+(c?rarCls(cid):'')+'" id="pk_'+t+'"><div class="in">'+
+    var sub=x.hit?((S.players||{})[x.to]?S.players[x.to].name+' 收下':'收下')
+                 :(x.why||'這次沒中');
+    h+='<div class="pkw"><div class="pk '+(c?rarCls(cid):'')+'" id="pk_'+t+'"><div class="in">'+
       '<div class="bk"><span>?</span></div>'+
       '<div class="fa'+(c?'':' empty')+'">'+
         (c?('<div class="rr">'+RAR[c.r].n+'</div><div class="nm">'+c.n+'</div><div class="ds">'+c.d+'</div>')
           :('<div class="nm">沒有卡片</div><div class="ds">下次再來</div>'))+
-      '</div></div></div><div class="cap" style="color:'+TC[t].color+'">'+TC[t].name+
-      (x.to&&(S.players||{})[x.to]?' · '+S.players[x.to].name:(x.why||''))+'</div></div>';
+      '</div></div></div>'+
+      '<div class="cap"><b style="color:'+TC[t].color+'">'+TC[t].name+'</b><span>'+sub+'</span></div></div>';
   });
   if(lastPhase!=='draw'||!$('packs').children.length) $('packs').innerHTML=h;
   if(lastPhase!=='draw'){
@@ -1530,7 +1615,12 @@ function viewResult(){
     ((res.tags&&res.tags.length)?'<div class="center" style="font-family:var(--mono);font-size:10.5px;color:var(--gold);margin-top:6px">'+res.tags.join(' · ')+'</div>':'')+
     (res.scape?'<div class="center" style="font-family:var(--mono);font-size:10.5px;color:#B84DFF;margin-top:4px">背鍋俠 · 獎懲轉嫁給 '+TC[res.scape.to].name+'</div>':'')+
     '<div class="expl">'+q.explain+'</div>';
-  if(lastPhase!=='result'){ flash(d>0);
+  if(lastPhase!=='result'){
+    flash(d>0);
+    var dl0=res.delta||{};
+    rollScores({r:(teamOf('r').score||0)-(dl0.r||0),b:(teamOf('b').score||0)-(dl0.b||0)},
+               {r:teamOf('r').score||0,b:teamOf('b').score||0});
+    setTimeout(popDeltas,60);
     if(d>0){tone(523,.12);setTimeout(function(){tone(659,.12);},90);setTimeout(function(){tone(784,.22);},180);buzz([20,40,20]);}
     else if(d<0){tone(220,.18,'sawtooth',.05);setTimeout(function(){tone(150,.3,'sawtooth',.05);},110);buzz(60);}
   }
