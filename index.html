@@ -165,6 +165,22 @@
     @keyframes revNm{from{opacity:0;letter-spacing:.4em;filter:blur(6px)}to{opacity:1;letter-spacing:.04em;filter:none}}
   }
   /* 下注時的領域條 */
+  .turnbar{border-radius:12px;padding:11px 10px;text-align:center;font-family:var(--disp);font-size:21px;
+    font-weight:700;letter-spacing:.04em;border:1px solid var(--hair2);background:#0d101c;color:var(--dim)}
+  .turnbar small{display:block;font-family:var(--mono);font-size:10px;font-weight:400;letter-spacing:.12em;
+    opacity:.7;margin-top:3px}
+  .turnbar.mine{color:#BFFFF6;border-color:#22F5DC88;background:linear-gradient(#0b2e2c,#071c1d);
+    box-shadow:0 0 32px -10px var(--cy)}
+  .turnbar.them{color:#D6DCEC;border-color:var(--hair2);background:linear-gradient(#141826,#0c0f18)}
+  .turnbar.duel{color:#E7C8FF;border-color:#B84DFF88;background:linear-gradient(#221033,#150a20);
+    box-shadow:0 0 32px -10px var(--vi)}
+  @media(prefers-reduced-motion:no-preference){
+    .turnbar.mine{animation:tbP 1.7s ease-in-out infinite}
+    @keyframes tbP{0%,100%{box-shadow:0 0 30px -12px var(--cy)}50%{box-shadow:0 0 40px -4px var(--cy)}}
+  }
+  .bcast{border:1px solid #FF3D6340;border-left:3px solid var(--red);background:#1c0d1388;
+    border-radius:0 10px 10px 0;padding:9px 12px;font-size:12.5px;color:#FFC3CF;line-height:1.55}
+  .bcast b{color:#FF8FA3;font-weight:700}
   .catbar{display:flex;align-items:center;gap:10px;border:1px solid var(--hair2);border-radius:12px;
     padding:9px 13px;background:linear-gradient(#141833,#0b0e19)}
   .catbar .ic{font-size:22px}
@@ -257,6 +273,8 @@
 
     <div id="blkQuiz" class="hide" style="display:flex;flex-direction:column;gap:10px">
       <div class="dbadge" id="dbadge">—</div>
+      <div class="turnbar" id="turnbar">—</div>
+      <div class="bcast hide" id="bcast"></div>
       <div class="qzone"><div class="timer" id="timer">
         <svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="#1a1f36" stroke-width="4"></circle>
         <circle id="ring" cx="30" cy="30" r="25" fill="none" stroke="#22F5DC" stroke-width="4" stroke-linecap="round"
@@ -361,14 +379,18 @@ function doJoin(asSpec){
     if(!R||!R.meta){smsg('找不到房號 '+code+'，請確認數字或請房主重發連結',true);return;}
     var started=(R.meta.phase!=='lobby'&&R.meta.phase!=='end');
     var mine=(R.players||{})[uid];
+    var rejoin=!!(mine&&(mine.team==='r'||mine.team==='b'));   // 本來就在隊上 → 重整後回到原隊
     var team;
-    if(asSpec||started) team='spec';
-    else team=(mine&&mine.team)?mine.team:smallerTeam(R.players);
+    if(asSpec) team='spec';
+    else if(rejoin) team=mine.team;
+    else if(started) team='spec';
+    else team=smallerTeam(R.players);
     var u={name:nm,online:true,team:team};
     if(!mine||mine.leader==null)u.leader=false;
     db.ref('rooms/'+code+'/players/'+uid).update(u).then(function(){
       smsg('');enter(code);
-      if(started&&!asSpec) net('遊戲已經開始，你以觀戰身分加入',false),setTimeout(function(){net('');},3500);
+      if(rejoin&&started) net('已回到 '+TC[team].name,false),setTimeout(function(){net('');},2500);
+      else if(started&&!asSpec) net('遊戲已經開始，你以觀戰身分加入',false),setTimeout(function(){net('');},3500);
     }).catch(function(e){smsg('加入失敗：'+(e.code||e.message),true);});
   }).catch(function(e){smsg('讀取房間失敗：'+(e.code||e.message),true);});
 }
@@ -409,8 +431,11 @@ function tally(t){
   var best=-1,bv=0;for(var i=0;i<4;i++){if(w[i]>bv){bv=w[i];best=i;}}
   return {w:w,best:best,any:bv>0};
 }
-function allVoted(t){var votes=S.votes||{};return teamMembers(t).every(function(m){
-  return !m.p.online || (votes[m.uid]!=null&&votes[m.uid]>=0);});}
+function allVoted(t){
+  var votes=S.votes||{},ms=teamMembers(t).filter(function(m){return m.p.online;});
+  if(!ms.length) return false;                       // 沒人在線就別自動判定，讓計時器跑完
+  return ms.every(function(m){return votes[m.uid]!=null&&votes[m.uid]>=0;});
+}
 
 /* ---- 房主：推進 ---- */
 function setPhase(ph,secs,extra){
@@ -427,8 +452,14 @@ function hostTick(){
   if(left>0){
     // 下注：兩隊都按了送出就立刻開牌，不必等滿 10 秒
     if(ph==='bet'&&teamOf('r').betLocked&&teamOf('b').betLocked){ return revealBets(); }
+    // 叫價：誰動完了就馬上換人，沒人還能動就直接進下一階段
+    if(ph==='bid'){
+      if(!m.turn) return;                                   // 還在 1.6 秒揭示
+      if(teamOf(m.turn).acted||teamOf(m.turn).passed) return advanceBid();
+      return;
+    }
     // A 情況：全員投完 → 直接判定，不再有 1.5 秒緩衝
-    if(ph==='quiz'&&m.mode!=='B'&&allVoted(m.actor)){ return judge(); }
+    if(ph==='quiz'&&m.mode!=='B'&&allVoted(m.actor)&&tally(m.actor).any){ return judge(); }
     // B 情況：任一隊長送出 → 立刻判定（不論送出的人是不是房主）
     if(ph==='quiz'&&m.mode==='B'&&m.submit&&!S.result){ return judge(); }
     return;
@@ -436,7 +467,7 @@ function hostTick(){
   // 時間到
   if(ph==='reveal'){ return startBet(); }
   if(ph==='bet'){ return revealBets(); }
-  if(ph==='bid'){ return bidTimeout(); }
+  if(ph==='bid'){ return m.turn?bidTimeout():advanceBid(); }
   if(ph==='quiz'){ return judge(); }
   if(ph==='result'){ return startRound(); }   // 房主沒按下一回合，10 秒後自動推進
 }
@@ -455,7 +486,7 @@ function startRound(){
   u['usedQ/'+pick.id]=true;
   u['q']={id:pick.id,category:pick.category,difficulty:pick.difficulty,question:pick.question,
           options:pick.options,answer:pick.answer,explain:pick.explain};
-  u['votes']=null;u['result']=null;u['bidLog']=null;
+  u['votes']=null;u['result']=null;u['bidLog']=null;u['rescueNote']=null;u['meta/rescue']=null;
   u['teams/r/bet']=0;u['teams/b/bet']=0;
   u['teams/r/passed']=false;u['teams/b/passed']=false;
   u['teams/r/acted']=false;u['teams/b/acted']=false;
@@ -465,39 +496,46 @@ function startRound(){
 function startBet(){ setPhase('bet',15); }
 function revealBets(){
   if(S.meta.phase!=='bet')return;          // 防重入
-  var u={};
-  u['meta/phase']='bid';u['meta/endsAt']=null;
-  ref.update(u).then(function(){ setTimeout(nextBidTurn,1200); });
+  ref.update({'meta/phase':'bid','meta/turn':null,'meta/endsAt':now()+1600});
 }
-function nextBidTurn(){
-  if(!isHost())return;
+/* 這一隊還有沒有合法動作？（加注 或 跟平）沒有的話就不該再叫他「維持」一次 */
+function bidOpts(t){
+  var mine=teamOf(t).bet||0,opp=teamOf(other(t)).bet||0,hi=Math.max(mine,opp),o=[];
+  TIERS.forEach(function(v){ if(v>=hi+500||(v===hi&&mine<opp)) o.push(v); });
+  return o;
+}
+function canAct(t){ return !teamOf(t).passed && bidOpts(t).length>0; }
+function whoseTurn(){
   var r=teamOf('r').bet||0,b=teamOf('b').bet||0,T=S.teams;
-  var turn=null;
-  if(r===b){
-    if(!T.b.acted&&!T.b.passed)turn='b';
-    else if(!T.r.acted&&!T.r.passed)turn='r';
-  } else {
-    var trail=r<b?'r':'b';
-    if(!T[trail].passed)turn=trail;
+  if(r===b){                       // 同注：還能加注的人才輪得到；兩邊都頂到上限 → 直接搶答
+    if(!T.b.acted&&canAct('b'))return 'b';
+    if(!T.r.acted&&canAct('r'))return 'r';
+    return null;
   }
-  if(!turn) return finishBid();
-  ref.update({'meta/turn':turn,'meta/phase':'bid','meta/endsAt':now()+8000});
+  var trail=r<b?'r':'b';
+  return canAct(trail)?trail:null;
+}
+function advanceBid(){
+  var w=whoseTurn();
+  if(!w) return finishBid();
+  ref.update({'meta/turn':w,'meta/endsAt':now()+8000});
 }
 function bidTimeout(){
-  var t=S.meta.turn;if(!t)return finishBid();
+  var t=S.meta.turn;if(!t)return advanceBid();
   pass(t,true);
 }
 function raise(t,v){
   var u={};u['teams/'+t+'/bet']=v;u['teams/'+t+'/acted']=true;u['teams/'+other(t)+'/acted']=false;
   u['bidLog/'+(now())]={who:t,v:v,type:'raise'};
-  ref.update(u).then(function(){ if(isHost())setTimeout(nextBidTurn,700); });
+  ref.update(u);
 }
 function pass(t,auto){
   var u={};u['teams/'+t+'/passed']=true;u['teams/'+t+'/acted']=true;
   u['bidLog/'+(now())]={who:t,v:teamOf(t).bet||0,type:auto?'timeout':'pass'};
-  ref.update(u).then(function(){ if(isHost())setTimeout(nextBidTurn,600); });
+  ref.update(u);
 }
 function finishBid(){
+  if(!guard())return;
   var r=teamOf('r').bet||0,b=teamOf('b').bet||0,mode,actor;
   if(r>b){mode='A';actor='r';} else if(b>r){mode='A';actor='b';} else {mode='B';actor=null;}
   ref.update({'meta/mode':mode,'meta/actor':actor,'meta/turn':null,
@@ -513,7 +551,15 @@ function judge(){
     var t=m.actor,tl=tally(t),ans=tl.best,ok=(ans===q.answer);
     var gain=SC[q.difficulty],loss=teamOf(t).bet||0;
     res={mode:'A',actor:t,ans:ans,ok:ok,delta:{},ts:now()};
-    res.delta[t]= ok? gain : -loss;
+    if(m.rescue){
+      // 搶答失手後的補救回合：先失手的那一隊在這裡才結算
+      var rn=S.rescueNote||{},from=rn.from||other(t);
+      res.rescue=true;res.rescueFrom=from;res.rescueWrongAns=rn.wrongAns;
+      if(ok){ res.delta[t]=gain; res.delta[from]=-(teamOf(from).bet||0); }
+      else  { res.delta[t]=0;    res.delta[from]=0; }      // 兩隊都答錯 → 誰都不扣
+    } else {
+      res.delta[t]= ok? gain : -loss;
+    }
   } else {
     var sub=m.submit;
     if(sub&&sub.team){
@@ -663,7 +709,7 @@ function viewReveal(){
 }
 function viewBet(){
   if(myTeam()==='spec'){
-    stage('暗押中','主持人視角 · 兩隊正在暗押');
+    stage('暗押中','觀戰視角 · 兩隊正在暗押');
     return;
   }
   $('blkBet').classList.remove('hide');
@@ -717,16 +763,17 @@ function viewBid(){
   $('log').innerHTML=lg||'<div class="l">叫價紀錄</div>';
   var spec=myTeam()==='spec';
   var myTurn=(!spec)&&(m.turn===myTeam())&&amLeader();
-  if(spec){ stage(m.turn?(TC[m.turn].name+' 叫價中'):'揭示','主持人視角');$('bidActs').innerHTML='';return; }
+  if(spec){ stage(m.turn?(TC[m.turn].name+' 叫價中'):'揭示','觀戰視角');$('bidActs').innerHTML='';return; }
   stage(m.turn?(m.turn===myTeam()?(amLeader()?'輪到你叫價':'輪到你們隊長'):'等對手叫價'):'揭示',
         m.turn?(myTurn?'加注或維持 · 8 秒沒動作視同維持':''):'兩張注同時掀開',myTurn);
   var box=$('bidActs');
   if(!myTurn){box.innerHTML='';return;}
-  var mine=teamOf(myTeam()).bet||0,opp=teamOf(other(myTeam())).bet||0,hi=Math.max(mine,opp);
-  if(box.dataset.k===String(mine)+'_'+String(opp))return;
-  box.dataset.k=String(mine)+'_'+String(opp);
+  var mine=teamOf(myTeam()).bet||0,opp=teamOf(other(myTeam())).bet||0;
+  var kk=[m.turn,mine,opp,m.round].join('_');
+  if(box.dataset.k===kk)return;
+  box.dataset.k=kk;
   box.innerHTML='';
-  var opts=[];TIERS.forEach(function(v){if(v>=hi+500||(v===hi&&mine<opp))opts.push(v);});
+  var opts=bidOpts(myTeam());
   opts.slice(0,2).forEach(function(v){
     var bt=document.createElement('button');bt.className='btn gold';
     bt.innerHTML=(v===opp?'跟到 ':'加到 ')+fmt(v)+'<small>'+(v===opp?'跟平 → 進搶答':'領先')+'</small>';
@@ -734,7 +781,7 @@ function viewBid(){
     box.appendChild(bt);
   });
   var k=document.createElement('button');k.className='btn ghost';
-  k.innerHTML=(mine===opp?'維持<small>同注 → 進搶答</small>':'維持<small>放棄這題</small>');
+  k.innerHTML=(mine===opp?'維持<small>同注 → 進搶答</small>':'維持<small>讓對手獨得作答權</small>');
   k.addEventListener('click',function(){pass(myTeam());tone(280,.12);box.innerHTML='';});
   box.appendChild(k);
 }
@@ -743,8 +790,32 @@ function dbadge(){
   var e=$('dbadge');e.className='dbadge d-'+d;
   e.innerHTML=DL[d]+'<span>答對 +'+fmt(SC[d])+'</span>';
 }
+function turnbar(){
+  var m=S.meta,mine=myTeam(),tb=$('turnbar'),bc=$('bcast');
+  if(m.phase==='result'){ tb.className='turnbar'; tb.innerHTML='本題結束<small>ROUND OVER</small>'; }
+  else if(m.mode==='B'){
+    tb.className='turnbar duel';
+    tb.innerHTML='搶答對決<small>兩隊同時作答 · 隊長先送出者定案</small>';
+  } else {
+    var a=m.actor;
+    if(a&&a===mine){ tb.className='turnbar mine';
+      tb.innerHTML='現在是你的隊伍作答<small>'+(m.rescue?'補救機會 · 答錯不扣分':'YOUR TEAM · ANSWER NOW')+'</small>'; }
+    else if(a){ tb.className='turnbar them';
+      tb.innerHTML='<span style="color:'+TC[a].color+'">'+TC[a].name+'</span> 正在作答中…<small>'+
+        (m.rescue?'補救機會進行中':'你們這回合沒有作答權')+'</small>'; }
+    else { tb.className='turnbar'; tb.innerHTML='等待中<small>—</small>'; }
+  }
+  // 搶答失手 → 全場廣播
+  var rn=S.rescueNote;
+  if(m.rescue&&rn&&rn.from){
+    var q=S.q||{},w=(rn.wrongAns!=null&&q.options)?('（答了 '+'ABCD'[rn.wrongAns]+'）'):'';
+    bc.classList.remove('hide');
+    bc.innerHTML='<b>'+TC[rn.from].name+' 搶答錯誤</b>'+w+'　→　換 '+TC[other(rn.from)].name+
+      ' 作答。若也答錯，<b>兩隊都不扣分</b>。';
+  } else bc.classList.add('hide');
+}
 function viewQuiz(){
-  $('blkQuiz').classList.remove('hide');dbadge();
+  $('blkQuiz').classList.remove('hide');dbadge();turnbar();
   var m=S.meta,q=S.q,mine=myTeam(),spec=(mine==='spec');
   var canAns=(!spec)&&((m.mode==='B')||(m.actor===mine));
   if(lastPhase!=='quiz'||$('qText').textContent!==q.question){
@@ -758,8 +829,8 @@ function viewQuiz(){
     });
     startRing();
   }
-  stage(m.mode==='B'?'搶答對決':(m.rescue?'補救機會':'作答中'),
-        canAns?(m.mode==='B'?'比誰先送出':'全員選完就直接對答案'):'觀戰中 · 你們沒有答題權');
+  stage(m.mode==='B'?'搶答對決':'作答中',
+        canAns?(m.mode==='B'?'隊長按送出就定案':'全員選完就直接對答案'):'你們這回合只能看');
   var votes=S.votes||{};
   [0,1,2,3].forEach(function(i){var el=$('av'+i);if(el)el.innerHTML='';});
   for(var k in votes){
@@ -782,16 +853,15 @@ function viewQuiz(){
     $('voteTxt').textContent='紅 '+fmtT(sr);
     $('oppTxt').textContent='藍 '+fmtT(sb);
     $('submit').classList.add('hide');
-    $('quizHint').textContent='主持人視角 · 兩隊的票你都看得到';
-    stage(m.mode==='B'?'搶答對決':(m.rescue?'補救機會':'作答中'),'主持人視角');
+    $('quizHint').textContent='觀戰視角 · 兩隊的票你都看得到';
+    stage(m.mode==='B'?'搶答對決':'作答中','觀戰視角');
     return;
   }
   var tl=tally(m.mode==='B'?mine:(m.actor||mine)),s=[];
   for(var i=0;i<4;i++)if(tl.w[i]>0)s.push('ABCD'[i]+' '+tl.w[i]);
   $('voteTxt').textContent=s.join(' ／ ')||'—';
   if(m.mode==='B'){
-    var ov=0;teamMembers(other(mine)).forEach(function(x){if(votes[x.uid]!=null&&votes[x.uid]>=0)ov++;});
-    $('oppTxt').textContent='對手已投 '+ov+' / '+teamMembers(other(mine)).length;
+    $('oppTxt').textContent='';
     $('submit').classList.toggle('hide',!amLeader());
     $('quizHint').textContent=amLeader()?'按下送出就以當下最高票定案':'等你們隊長送出';
   } else {
@@ -816,7 +886,7 @@ function ringTick(){
   $('timer').classList.toggle('hot',left<=5);
 }
 function viewResult(){
-  $('blkQuiz').classList.remove('hide');$('blkResult').classList.remove('hide');dbadge();
+  $('blkQuiz').classList.remove('hide');$('blkResult').classList.remove('hide');dbadge();turnbar();
   var q=S.q,res=S.result||{},mine=myTeam();
   Array.prototype.forEach.call($('opts').children,function(b,i){
     b.disabled=true;b.classList.remove('sel');
@@ -832,6 +902,8 @@ function viewResult(){
   if(mine==='spec'){
     var dr=(res.delta&&res.delta.r)||0, dbb=(res.delta&&res.delta.b)||0;
     msg='紅 '+(dr>0?'+':(dr<0?'−':'±'))+fmt(Math.abs(dr))+'　藍 '+(dbb>0?'+':(dbb<0?'−':'±'))+fmt(Math.abs(dbb));
+  } else if(res.rescue&&!res.ok){
+    msg='兩隊都答錯 · 誰都不扣分';
   } else if(res.both){
     msg=(res.delta.r===0&&res.delta.b===0)?'兩隊都答錯 · 誰都不扣':'時間到 · 以最高票判定';
   } else if(res.actor===mine){
@@ -855,15 +927,20 @@ $('next').addEventListener('click',function(){ if(isHost())startRound(); });
 function renderEnd(){
   $('s-game').classList.add('hide');$('s-lobby').classList.add('hide');$('s-end').classList.remove('hide');
   var ts=['r','b'].map(function(t){return {t:t,T:teamOf(t)};}).sort(function(a,b){return (b.T.score||0)-(a.T.score||0);});
+  var isTie=((ts[0].T.score||0)===(ts[1].T.score||0));
   var h='';ts.forEach(function(x,i){
-    h+='<div class="lrow"'+(i===0?' style="border-color:'+TC[x.t].color+'"':'')+'><span class="pos">'+(i+1)+'</span>'+
+    h+='<div class="lrow"'+(i===0&&!isTie?' style="border-color:'+TC[x.t].color+'"':'')+
+      '><span class="pos">'+(isTie?'=':(i+1))+'</span>'+
       '<span style="color:'+TC[x.t].color+'">'+TC[x.t].name+(myTeam()===x.t?'（你）':'')+'</span>'+
       '<span class="mini">答對 '+(x.T.correct||0)+'</span>'+
       '<span class="sc'+((x.T.score||0)<0?' neg':'')+'">'+fmt(x.T.score||0)+'</span></div>';});
   $('endBox').innerHTML=h;
-  var win=ts[0];
-  $('endStat').innerHTML='<div class="center big" style="color:'+TC[win.t].color+'">'+TC[win.t].name+' 獲勝</div>'+
-    '<div class="center" style="font-size:13px;color:var(--dim)">分差 '+fmt((ts[0].T.score||0)-(ts[1].T.score||0))+' 分</div>';
+  var win=ts[0],gap=(ts[0].T.score||0)-(ts[1].T.score||0),tie=(gap===0);
+  $('endStat').innerHTML=tie
+    ? '<div class="center big" style="color:var(--gold)">平手</div>'+
+      '<div class="center" style="font-size:13px;color:var(--dim)">兩隊同分 '+fmt(ts[0].T.score||0)+'，不比答對題數</div>'
+    : '<div class="center big" style="color:'+TC[win.t].color+'">'+TC[win.t].name+' 獲勝</div>'+
+      '<div class="center" style="font-size:13px;color:var(--dim)">分差 '+fmt(gap)+' 分</div>';
   $('again').classList.remove('hide');
   if(lastPhase!=='end'){tone(523,.14);setTimeout(function(){tone(659,.14);},130);setTimeout(function(){tone(784,.3);},260);}
   lastPhase='end';
