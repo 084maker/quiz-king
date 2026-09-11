@@ -395,6 +395,7 @@
     <div class="card" id="endStat" style="margin-top:8px"></div>
     <button class="btn" id="again" style="margin-top:12px">回到組隊大廳<small>重置分數，重新分隊</small></button>
   </section>
+<div id="qk-ver" style="position:fixed;right:6px;bottom:4px;font-family:var(--mono);font-size:9px;color:#3a4160;z-index:5;pointer-events:none">v1.0.2</div>
 </div>
 <div id="sheetHost"></div>
 <div id="fxHost"></div>
@@ -583,6 +584,62 @@ function hostTick(){
   if(ph==='draw'){ return finishDraw(); }
 }
 setInterval(function(){try{hostTick();}catch(e){}},400);
+
+/* ---- 房主心跳與自動接手 ----
+   房主的手機一鎖屏，瀏覽器就會把計時器凍結，整場跟著停住。
+   所以房主每 3 秒蓋一次時間戳；超過 12 秒沒蓋，線上玩家中 uid 最小的那個自動接手主持。 */
+setInterval(function(){try{
+  if(!ref||!S||!S.meta)return;
+  var ph=S.meta.phase;if(ph==='lobby')return;
+  if(isHost())ref.child('meta/hb').set(now());
+}catch(e){}},3000);
+
+var tookOver=0;
+function watchdog(){
+  if(!ref||!S||!S.meta||!S.players)return;
+  var m=S.meta,ph=m.phase;
+  if(ph==='lobby'||ph==='end')return;
+  if(isHost())return;
+  if(!m.hb)return;                                 // 還沒有心跳資料，先別搶
+  if(now()-m.hb<12000)return;                      // 房主還活著
+  if(now()-tookOver<15000)return;                  // 剛接手過，別連環搶
+  var on=[];for(var k in S.players){if(S.players[k].online)on.push(k);}
+  on.sort();
+  if(!on.length||on[0]!==uid)return;               // 只有「線上最小 uid」有資格接手
+  tookOver=now();
+  ref.child('meta/host').transaction(function(cur){
+    if(cur===uid)return;
+    return uid;
+  }).then(function(r){
+    if(r.committed){
+      ref.child('meta/hb').set(now());
+      net('原房主沒有回應，已由你接手主持',false);
+      setTimeout(function(){net('');},4000);
+      tone(660,.12);buzz(25);
+    }
+  });
+}
+setInterval(function(){try{watchdog();}catch(e){}},2000);
+
+/* 任何階段的總保險絲：倒數結束超過 20 秒還沒動，就強制推進一次 */
+var lastPh='',lastPhAt=0;
+function fuse(){
+  if(!isHost()||!S||!S.meta)return;
+  var m=S.meta,ph=m.phase;
+  if(ph==='lobby'||ph==='end'){lastPh=ph;return;}
+  if(ph!==lastPh){lastPh=ph;lastPhAt=now();return;}
+  if(!m.endsAt)return;
+  if(now()-m.endsAt<20000)return;
+  lastPhAt=now();_busy=0;
+  if(ph==='reveal')return startBet();
+  if(ph==='bet')   return revealBets();
+  if(ph==='bid')   return finishBid();
+  if(ph==='prep')  return startQuiz();
+  if(ph==='quiz')  return judge();
+  if(ph==='result')return afterResult();
+  if(ph==='draw')  return finishDraw();
+}
+setInterval(function(){try{fuse();}catch(e){}},2000);
 
 function startRound(){
   if(!guard())return;
@@ -1567,7 +1624,7 @@ $('start').addEventListener('click',function(){
   }
   var r=teamMembers('r').length,b=teamMembers('b').length;
   if(!r||!b){net('紅藍兩隊都要至少 1 人（觀戰者不算），先按重新分隊',true);setTimeout(function(){net('');},3000);return;}
-  var u={'meta/max':parseInt($('rounds').value,10),'meta/round':0};
+  var u={'meta/max':parseInt($('rounds').value,10),'meta/round':0,'meta/hb':now()};
   ['r','b'].forEach(function(t){var ms=teamMembers(t);
     if(!ms.some(function(x){return x.p.leader;})&&ms.length) u['players/'+ms[0].uid+'/leader']=true;});
   ref.update(u).then(function(){ startRound(); });
