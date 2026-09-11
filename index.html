@@ -170,7 +170,9 @@
       <div><label>你的暱稱</label><input id="nick" maxlength="8" placeholder="輸入暱稱"></div>
       <div><label>房號（加入別人的房間才要填）</label><input id="code" class="code" inputmode="numeric" maxlength="6" placeholder="－－－－－－"></div>
       <button class="btn" id="join">加入房間</button>
+      <button class="btn ghost" id="joinSpec">以觀戰身分加入<small>只看不玩</small></button>
       <button class="btn ghost" id="create">建立新房間<small>你會成為房主</small></button>
+      <div id="startMsg" class="hint" style="min-height:14px"></div>
     </div>
     <p class="hint" style="margin-top:14px">題庫 <b id="qc"></b> 題 · 七領域四難度<br>不用註冊，點連結就能玩</p>
   </section>
@@ -182,6 +184,9 @@
     <div class="share" id="shareBox">—</div>
     <button class="btn ghost" id="copyLink" style="margin-top:8px">複製邀請連結</button>
     <div id="teams" style="display:flex;flex-direction:column;gap:9px;margin-top:12px"></div>
+    <div id="waitBox" class="card hide" style="margin-top:9px"></div>
+    <div id="specBox" class="card hide" style="margin-top:9px"></div>
+    <button class="btn ghost" id="toggleSpec" style="margin-top:9px">—</button>
     <div class="card hide" id="hostBox" style="margin-top:10px;display:flex;flex-direction:column;gap:10px">
       <div class="row">
         <div><label>回合數</label><select id="rounds"><option value="6">6 回合</option><option value="12" selected>12 回合</option></select></div>
@@ -293,8 +298,12 @@ function now(){return Date.now()+offset;}
 function fmt(n){return (n<0?'−':'')+Math.abs(n).toLocaleString('en-US');}
 
 /* ---- 建房 / 加入 ---- */
-function nickOK(){var v=$('nick').value.trim();if(!v){tone(160,.14,'square',.04);net('請先輸入暱稱',true);
-  setTimeout(function(){net('');},1800);return null;}localStorage.setItem('qk-nick',v);return v.slice(0,8);}
+function smsg(t,bad){var e=$('startMsg');if(!e)return;e.innerHTML=t||'';
+  e.style.color=bad?'#FF8FA3':'var(--cy)';}
+function nickOK(){var v=$('nick').value.trim();if(!v){tone(160,.14,'square',.04);
+  smsg('請先輸入暱稱',true);return null;}localStorage.setItem('qk-nick',v);smsg('');return v.slice(0,8);}
+function smallerTeam(players){var r=0,b=0;for(var k in (players||{})){var t=players[k].team;
+  if(t==='r')r++;else if(t==='b')b++;}return r<=b?'r':'b';}
 $('create').addEventListener('click',function(){
   var nm=nickOK();if(!nm)return;
   var code=String(Math.floor(100000+Math.random()*900000));
@@ -307,16 +316,29 @@ $('create').addEventListener('click',function(){
     return r.set(init).then(function(){enter(code);});
   });
 });
-$('join').addEventListener('click',function(){
+function doJoin(asSpec){
   var nm=nickOK();if(!nm)return;
   var code=$('code').value.replace(/\D/g,'');
-  if(code.length!==6){net('房號要 6 位數字',true);setTimeout(function(){net('');},1800);return;}
-  db.ref('rooms/'+code+'/meta').once('value').then(function(s){
-    if(!s.exists()){net('找不到這個房間',true);setTimeout(function(){net('');},2200);return;}
-    if(s.val().phase!=='lobby'&&s.val().phase!=='end'){net('這場已經開打了',true);setTimeout(function(){net('');},2200);return;}
-    db.ref('rooms/'+code+'/players/'+uid).update({name:nm,online:true}).then(function(){enter(code);});
-  });
-});
+  if(code.length!==6){smsg('房號要 6 位數字（連結會自動帶入）',true);return;}
+  smsg('正在加入 '+code+' …');
+  db.ref('rooms/'+code).once('value').then(function(s){
+    var R=s.val();
+    if(!R||!R.meta){smsg('找不到房號 '+code+'，請確認數字或請房主重發連結',true);return;}
+    var started=(R.meta.phase!=='lobby'&&R.meta.phase!=='end');
+    var mine=(R.players||{})[uid];
+    var team;
+    if(asSpec||started) team='spec';
+    else team=(mine&&mine.team)?mine.team:smallerTeam(R.players);
+    var u={name:nm,online:true,team:team};
+    if(!mine||mine.leader==null)u.leader=false;
+    db.ref('rooms/'+code+'/players/'+uid).update(u).then(function(){
+      smsg('');enter(code);
+      if(started&&!asSpec) net('遊戲已經開始，你以觀戰身分加入',false),setTimeout(function(){net('');},3500);
+    }).catch(function(e){smsg('加入失敗：'+(e.code||e.message),true);});
+  }).catch(function(e){smsg('讀取房間失敗：'+(e.code||e.message),true);});
+}
+$('join').addEventListener('click',function(){doJoin(false);});
+$('joinSpec').addEventListener('click',function(){doJoin(true);});
 function enter(code){
   room=code;ref=db.ref('rooms/'+code);
   history.replaceState(null,'',location.pathname+'?room='+code);
@@ -487,6 +509,7 @@ function judge(){
 function myBet(v){ if(!amLeader())return; ref.update({['teams/'+myTeam()+'/bet']:v}); }
 function vote(i){
   var m=S.meta;if(m.phase!=='quiz')return;
+  if(myTeam()==='spec')return;
   if(m.mode==='A'&&m.actor!==myTeam())return;
   ref.child('votes/'+uid).set(i);
   ref.update({'meta/soon':null});
@@ -521,10 +544,30 @@ function renderLobby(){
     h+='</div></div>';
   });
   $('teams').innerHTML=h;
+  // 待分隊（防禦：萬一有人沒有隊伍，至少看得到他在房裡）
+  var un=[];for(var k in (S.players||{})){var pp=S.players[k];
+    if(pp.team!=='r'&&pp.team!=='b'&&pp.team!=='spec')un.push({uid:k,p:pp});}
+  if(un.length){
+    $('waitBox').classList.remove('hide');
+    var wh='<div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-bottom:6px">待分隊 · '+un.length+' 人（房主按重新分隊）</div><div class="mem">';
+    un.forEach(function(x){wh+='<span class="av" style="background:#3a2b08;color:#FFE6A6">'+x.p.name.slice(0,1)+'</span>';});
+    $('waitBox').innerHTML=wh+'</div>';
+  } else $('waitBox').classList.add('hide');
+  var sp=teamMembers('spec');
+  if(sp.length){
+    $('specBox').classList.remove('hide');
+    var sh='<div style="font-family:var(--mono);font-size:10px;color:var(--dim2);margin-bottom:6px">觀戰 · '+sp.length+' 人</div><div class="mem">';
+    sp.forEach(function(x){sh+='<span class="av" style="background:#2a2f4a;color:#c0c8e0'+(x.p.online?'':';opacity:.35')+'">'+x.p.name.slice(0,1)+'</span>';});
+    $('specBox').innerHTML=sh+'</div>';
+  } else $('specBox').classList.add('hide');
+  var iAmSpec=myTeam()==='spec';
+  $('toggleSpec').innerHTML=iAmSpec?'我要下場比賽<small>加入人數較少的隊伍</small>'
+    :(isHost()?'我要當主持人（不參賽）<small>只看不玩，仍可控制流程</small>':'我要觀戰（不參賽）<small>只看不玩</small>');
   $('hostBox').classList.toggle('hide',!isHost());
-  var n=Object.keys(S.players||{}).length;
-  $('lobbyHint').textContent=isHost()? ('目前 '+n+' 人 · 把連結傳給朋友，人到齊就開始')
-    : ('目前 '+n+' 人 · 等房主開始遊戲…');
+  var np=teamMembers('r').length+teamMembers('b').length;
+  var total=Object.keys(S.players||{}).length;
+  $('lobbyHint').textContent=(isHost()? '房內 '+total+' 人（參賽 '+np+' · 觀戰 '+sp.length+(un.length?' · 待分隊 '+un.length:'')+'）· 把連結傳給朋友'
+    : '房內 '+total+' 人（參賽 '+np+' · 觀戰 '+sp.length+'）· 等房主開始遊戲…');
 }
 function renderGame(){
   var m=S.meta,q=S.q||{};
@@ -564,6 +607,10 @@ function stage(lb,sb,turn){$('stLb').textContent=lb;$('stSb').textContent=sb||''
   $('stage').classList.toggle('turn',!!turn);}
 function viewReveal(){ stage('公布領域','這回合考 '+(S.q?S.q.category:'')); if(lastPhase!=='reveal')tone(520,.12); }
 function viewBet(){
+  if(myTeam()==='spec'){
+    stage('暗押中','主持人視角 · 兩隊正在暗押');
+    return;
+  }
   $('blkBet').classList.remove('hide');
   var T=teamOf(myTeam()),lead=amLeader();
   stage('暗押中',lead?'只有你能碰籌碼':'等隊長下注');
@@ -602,7 +649,9 @@ function viewBid(){
     lg+='<div class="l '+e.who+'">'+TC[e.who].name+(e.type==='raise'?' 加到 ':' 維持 ')+'<b>'+fmt(e.v)+'</b>'+
         (e.type==='timeout'?'（時間到）':'')+'</div>';});
   $('log').innerHTML=lg||'<div class="l">叫價紀錄</div>';
-  var myTurn=(m.turn===myTeam())&&amLeader();
+  var spec=myTeam()==='spec';
+  var myTurn=(!spec)&&(m.turn===myTeam())&&amLeader();
+  if(spec){ stage(m.turn?(TC[m.turn].name+' 叫價中'):'揭示','主持人視角');$('bidActs').innerHTML='';return; }
   stage(m.turn?(m.turn===myTeam()?(amLeader()?'輪到你叫價':'輪到你們隊長'):'等對手叫價'):'揭示',
         m.turn?(myTurn?'加注或維持 · 8 秒沒動作視同維持':''):'兩張注同時掀開',myTurn);
   var box=$('bidActs');
@@ -625,7 +674,8 @@ function viewBid(){
 }
 function viewQuiz(){
   $('blkQuiz').classList.remove('hide');
-  var m=S.meta,q=S.q,mine=myTeam(),canAns=(m.mode==='B')||(m.actor===mine);
+  var m=S.meta,q=S.q,mine=myTeam(),spec=(mine==='spec');
+  var canAns=(!spec)&&((m.mode==='B')||(m.actor===mine));
   if(lastPhase!=='quiz'||$('qText').textContent!==q.question){
     $('qText').textContent=q.question;
     var h='';q.options.forEach(function(o,i){
@@ -643,8 +693,10 @@ function viewQuiz(){
   [0,1,2,3].forEach(function(i){var el=$('av'+i);if(el)el.innerHTML='';});
   for(var k in votes){
     var p=S.players[k];if(!p)continue;var v=votes[k];if(v==null||v<0)continue;
-    if(m.mode==='A'&&p.team!==m.actor)continue;
-    if(m.mode==='B'&&p.team!==mine)continue;
+    if(!spec){
+      if(m.mode==='A'&&p.team!==m.actor)continue;
+      if(m.mode==='B'&&p.team!==mine)continue;
+    }
     var el2=$('av'+v);if(!el2)continue;
     var sp=document.createElement('span');
     sp.className='av '+TC[p.team].cls+(p.leader?' cap':'');sp.textContent=p.name.slice(0,1);
@@ -654,6 +706,15 @@ function viewQuiz(){
     b.classList.toggle('sel',votes[uid]===i);
     b.disabled=!canAns;
   });
+  if(spec){
+    var sr=tally('r'),sb=tally('b'),fmtT=function(x){var o=[];for(var i=0;i<4;i++)if(x.w[i]>0)o.push('ABCD'[i]+' '+x.w[i]);return o.join(' ／ ')||'—';};
+    $('voteTxt').textContent='紅 '+fmtT(sr);
+    $('oppTxt').textContent='藍 '+fmtT(sb);
+    $('submit').classList.add('hide');
+    $('quizHint').textContent='主持人視角 · 兩隊的票你都看得到';
+    stage(m.mode==='B'?'搶答對決':(m.rescue?'補救機會':'作答中'),'主持人視角');
+    return;
+  }
   var tl=tally(m.mode==='B'?mine:(m.actor||mine)),s=[];
   for(var i=0;i<4;i++)if(tl.w[i]>0)s.push('ABCD'[i]+' '+tl.w[i]);
   $('voteTxt').textContent=s.join(' ／ ')||'—';
@@ -695,11 +756,18 @@ function viewResult(){
   $('tn').textContent='—';$('timer').classList.remove('hot');
   $('ring').setAttribute('stroke','#1a1f36');$('ring').setAttribute('stroke-dashoffset','0');
   $('quizHint').textContent='';$('submit').classList.add('hide');
-  var d=(res.delta&&res.delta[mine])||0;
+  var d=(mine==='spec')?0:((res.delta&&res.delta[mine])||0);
   var msg;
-  if(res.both){ msg = (res.delta.r===0&&res.delta.b===0)?'兩隊都答錯 · 誰都不扣':'時間到 · 以最高票判定'; }
-  else if(res.actor===mine) msg = res.ok?(res.mode==='B'?'搶答成功！':'答對了！'):'答錯了';
-  else msg = res.ok?'對手答對了':'對手答錯了';
+  if(mine==='spec'){
+    var dr=(res.delta&&res.delta.r)||0, dbb=(res.delta&&res.delta.b)||0;
+    msg='紅 '+(dr>0?'+':(dr<0?'−':'±'))+fmt(Math.abs(dr))+'　藍 '+(dbb>0?'+':(dbb<0?'−':'±'))+fmt(Math.abs(dbb));
+  } else if(res.both){
+    msg=(res.delta.r===0&&res.delta.b===0)?'兩隊都答錯 · 誰都不扣':'時間到 · 以最高票判定';
+  } else if(res.actor===mine){
+    msg=res.ok?(res.mode==='B'?'搶答成功！':'答對了！'):'答錯了';
+  } else {
+    msg=res.ok?'對手答對了':'對手答錯了';
+  }
   $('resultBox').innerHTML='<div class="center big" style="color:'+(d>0?'var(--green)':(d<0?'var(--red)':'var(--dim)'))+'">'+
     msg+'</div><div class="center" style="font-size:13px;color:var(--dim);margin-top:2px">正解：'+q.options[q.answer]+
     '　<b style="color:'+(d>0?'var(--green)':'var(--red)')+'">'+(d?((d>0?'+':'−')+fmt(Math.abs(d))):'±0')+'</b></div>'+
@@ -737,10 +805,33 @@ $('again').addEventListener('click',function(){
     'teams/r/bet':0,'teams/b/bet':0};
   ref.update(u);
 });
+$('toggleSpec').addEventListener('click',function(){
+  if(!S)return;
+  var iAmSpec=myTeam()==='spec';
+  if(iAmSpec){
+    var t=smallerTeam(S.players);
+    var u={};u['players/'+uid+'/team']=t;
+    ref.update(u).then(function(){
+      var ms=teamMembers(t);
+      if(!ms.some(function(x){return x.p.leader;})&&ms.length){
+        var uu={};uu['players/'+ms[0].uid+'/leader']=true;ref.update(uu);}
+    });
+  } else {
+    var wasLeader=amLeader(),t0=myTeam();
+    var u2={};u2['players/'+uid+'/team']='spec';u2['players/'+uid+'/leader']=false;
+    ref.update(u2).then(function(){
+      if(wasLeader){var ms=teamMembers(t0).filter(function(x){return x.uid!==uid;});
+        if(ms.length){var uu={};uu['players/'+ms[0].uid+'/leader']=true;ref.update(uu);}}
+    });
+  }
+  clink();
+});
+
 /* ---- 房主：分隊與開始 ---- */
 $('shuffle').addEventListener('click',function(){
   if(!isHost())return;
-  var ps=Object.keys(S.players||{});ps.sort(function(){return Math.random()-.5;});
+  var ps=Object.keys(S.players||{}).filter(function(k){return S.players[k].team!=='spec';});
+  ps.sort(function(){return Math.random()-.5;});
   var u={};ps.forEach(function(k,i){u['players/'+k+'/team']=(i%2===0)?'r':'b';u['players/'+k+'/leader']=false;});
   ref.update(u).then(function(){
     var uu={};['r','b'].forEach(function(t){var ms=teamMembers(t);if(ms.length)uu['players/'+ms[0].uid+'/leader']=true;});
@@ -750,8 +841,20 @@ $('shuffle').addEventListener('click',function(){
 });
 $('start').addEventListener('click',function(){
   if(!isHost())return;
+  // 開賽前先把沒隊伍的人自動塞進人數較少的隊
+  var pend={},fix={};
+  for(var kk in (S.players||{})){var pv=S.players[kk];
+    if(pv.team!=='r'&&pv.team!=='b'&&pv.team!=='spec'){pend[kk]=1;}}
+  if(Object.keys(pend).length){
+    var cr=teamMembers('r').length,cb=teamMembers('b').length;
+    Object.keys(pend).forEach(function(kk){
+      if(cr<=cb){fix['players/'+kk+'/team']='r';cr++;}else{fix['players/'+kk+'/team']='b';cb++;}
+      fix['players/'+kk+'/leader']=false;});
+    ref.update(fix);
+    net('已把未分隊的人自動加入，再按一次開始',false);setTimeout(function(){net('');},2500);return;
+  }
   var r=teamMembers('r').length,b=teamMembers('b').length;
-  if(!r||!b){net('每隊至少要有 1 人，先按重新分隊',true);setTimeout(function(){net('');},2500);return;}
+  if(!r||!b){net('紅藍兩隊都要至少 1 人（觀戰者不算），先按重新分隊',true);setTimeout(function(){net('');},3000);return;}
   var u={'meta/max':parseInt($('rounds').value,10),'meta/round':0};
   ['r','b'].forEach(function(t){var ms=teamMembers(t);
     if(!ms.some(function(x){return x.p.leader;})&&ms.length) u['players/'+ms[0].uid+'/leader']=true;});
