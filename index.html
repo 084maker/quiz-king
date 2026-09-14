@@ -87,6 +87,7 @@
   .awGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
   .aw{border:1px solid var(--hair);border-radius:13px;padding:11px 12px;
     background:linear-gradient(#0f1322,#0a0d16);opacity:0;transform:rotateX(-70deg);transform-origin:top}
+  .awGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .aw.top{border-color:#FFC93B4d;background:linear-gradient(#1d1708,#0a0d16 70%)}
   .aw .tt{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--dim2)}
   .aw.top .tt{color:var(--gold)}
@@ -94,6 +95,32 @@
     display:flex;align-items:center;gap:6px}
   .aw .who i{width:8px;height:8px;border-radius:2px;transform:rotate(45deg);flex:none;font-style:normal}
   .aw .vl{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:2px;line-height:1.5}
+  .btnRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .pnl{position:fixed;inset:0;z-index:64;background:#03040ad9;backdrop-filter:blur(7px);
+    display:flex;align-items:center;justify-content:center;padding:14px}
+  .pnl .sheet2{width:100%;max-width:412px;border:1px solid var(--hair2);border-radius:18px;
+    background:linear-gradient(#0E1120,#0A0C16);overflow:hidden;max-height:92vh;
+    display:flex;flex-direction:column;box-shadow:0 40px 90px -40px #000}
+  .pnl .hd{padding:13px 15px 11px;border-bottom:1px solid var(--hair);
+    background:linear-gradient(#151a2e,#0d1120)}
+  .pnl .hd .t{font-family:var(--disp);font-size:19px;font-weight:700;color:var(--ink);
+    display:flex;align-items:center;gap:8px}
+  .pnl .hd .t em{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+    color:var(--dim2);margin-left:auto}
+  .pnl .hd .sub{font-family:var(--mono);font-size:10px;color:var(--dim2);margin-top:4px;
+    display:flex;gap:9px;flex-wrap:wrap}
+  .pnl .hd .sub b{font-weight:400}
+  .pnl .bd{padding:13px 15px;overflow-y:auto}
+  .pnl .ft{padding:11px 15px 13px;border-top:1px solid var(--hair)}
+  .shotHint{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--dim2);
+    text-align:center;padding-bottom:9px}
+  .miniScore{display:flex;align-items:center;justify-content:center;gap:9px;
+    font-family:var(--disp);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+  .miniScore .vs2{font-family:var(--mono);font-size:9px;color:var(--dim2)}
+  @media(prefers-reduced-motion:no-preference){
+    .pnl .sheet2{animation:pnlIn .34s cubic-bezier(.2,.9,.3,1) both}
+    @keyframes pnlIn{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+  }
   .chartBox{border:1px solid var(--hair);border-radius:13px;padding:11px;background:#0b0e18;margin-top:10px}
   .chartBox .cp{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--dim2);margin-bottom:7px}
   .endSec{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--vi);
@@ -159,6 +186,146 @@
     border:1px solid var(--hair2);border-radius:20px;padding:3px 8px}
   .bigCard .meta span.hl{color:var(--rc);border-color:var(--rc)}
   .bigCard .nt{font-size:12px;color:var(--dim2);margin-top:8px;line-height:1.6}
+
+/* ---------- 首頁選單與說明 ---------- */
+  .menuWrap{display:flex;flex-direction:column;gap:10px;min-height:390px}
+  .brandBlk{text-align:center;padding:18px 0 6px}
+  .brandBlk .kk{font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:var(--cy)}
+  .brandBlk .tt{font-family:var(--body);font-weight:900;font-size:34px;line-height:1.05;margin:8px 0 4px}
+  .brandBlk .tt b{color:var(--cy);font-weight:900}
+  .brandBlk .ss{font-size:13px;color:var(--dim)}
+  .flowLine{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:4px 0 2px}
+  .flowLine span{font-family:var(--mono);font-size:9.5px;color:var(--dim2);border:1px solid var(--hair);
+    border-radius:20px;padding:4px 9px;background:#0b0e18}
+  .flowLine span.hi{color:var(--cy);border-color:#22F5DC44}
+  .flowLine i{font-style:normal;color:var(--dim2);align-self:center;font-size:9px}
+  .hpTitle{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+  .hpTitle h4{font-family:var(--disp);font-size:20px;font-weight:700;margin:0}
+  .hpTitle em{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+    color:var(--dim2);margin-left:auto}
+  .hpLead{font-size:13.5px;color:var(--dim);line-height:1.72;margin:0 0 4px}
+  .hpLead b{color:var(--ink)}
+  .subGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .subBtn{border:1px solid var(--hair);border-radius:12px;padding:11px 12px;background:#0b0e18;
+    cursor:pointer;text-align:left;font-family:var(--body);color:var(--ink);transition:border-color .15s,background .15s}
+  .subBtn:hover{border-color:#22F5DC44;background:#0d1320}
+  .subBtn .n{font-family:var(--disp);font-size:15px;font-weight:700;display:block}
+  .subBtn .d{font-family:var(--mono);font-size:9px;color:var(--dim2);margin-top:2px;display:block}
+  .subBtn.anim .d{color:var(--cy)}
+  .subBtn.wide{grid-column:1/-1}
+  .deep{border:1px solid var(--hair2);border-radius:13px;padding:13px 14px;background:#0b0e18}
+  .deep h5{font-family:var(--disp);font-size:17px;margin:0 0 6px;color:var(--cy)}
+  .deep p{margin:0 0 8px;font-size:13px;color:var(--dim);line-height:1.7}
+  .deep p:last-of-type{margin-bottom:0}
+  .deep b{color:var(--ink)}
+  .deep .tbl{display:flex;flex-direction:column;gap:1px;border:1px solid var(--hair);
+    border-radius:9px;overflow:hidden;margin:8px 0}
+  .deep .tbl div{display:flex;justify-content:space-between;padding:7px 10px;background:#10131f;
+    font-size:12.5px}
+  .deep .tbl div span:last-child{font-family:var(--disp);font-weight:700;color:var(--gold)}
+  
+  /* ---------- 說明頁演示 ---------- */
+  .dStage{border:1px solid var(--hair2);border-radius:13px;padding:14px 13px;background:#0a0d16;
+    min-height:158px;display:flex;flex-direction:column;gap:9px;justify-content:center}
+  .dNote{font-size:12.5px;color:var(--dim);text-align:center;line-height:1.65;min-height:2.6em;
+    padding:0 4px}
+  .dNote b{color:var(--ink)}
+  .dflow{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;margin-bottom:2px}
+  .dflow span{font-family:var(--mono);font-size:8.5px;color:#3b4470;border:1px solid #1c2136;
+    border-radius:20px;padding:3px 7px;line-height:1}
+  .dflow span.done{color:#2a5d5a;border-color:#1d3c3a}
+  .dflow span.on{color:var(--void);background:var(--cy);border-color:var(--cy);font-weight:600}
+  .dloop{font-family:var(--mono);font-size:9px;color:var(--dim2);text-align:center;line-height:1.9;
+    border:1px solid var(--hair);border-radius:9px;padding:7px 9px;background:#10131f}
+  .dphase{display:flex;gap:7px;align-items:center;justify-content:center}
+  .dphase .p{font-family:var(--disp);font-size:15px;font-weight:700;color:#3b4470;
+    border:1px solid #1c2136;border-radius:9px;padding:5px 12px}
+  .dphase .p.on{color:var(--gold);border-color:#FFC93B66;background:linear-gradient(#33260a,#1d1606)}
+  .dphase .ar{color:var(--dim2);font-size:11px}
+  .dfx{font-family:var(--disp);font-size:26px;font-weight:700;color:var(--vi);text-align:center;
+    letter-spacing:.12em;text-shadow:0 0 30px var(--vi)}
+  .dfx span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.22em;
+    color:#fff9;margin-top:3px}
+  .dcast2{border:1px solid #B84DFF3d;border-left:3px solid var(--vi);background:#1a0d2870;
+    border-radius:0 9px 9px 0;padding:7px 11px;font-family:var(--mono);font-size:10.5px;color:#D9AEFF}
+  .dcast2 b{color:#E7C8FF}
+  .dCtl{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:stretch}
+  .dCtl .btn.sm{font-size:14px;padding:11px 14px;white-space:nowrap}
+  .dCtl .btn.sm:disabled{opacity:.3}
+  .dTap{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--dim2);text-align:center;
+    margin-top:-2px}
+  .dStage{cursor:pointer}
+  .dPips{display:flex;gap:5px;justify-content:center;margin-top:2px}
+  .dPips i{width:16px;height:3px;border-radius:2px;background:#1c2136;display:block}
+  .dPips i.on{background:var(--cy)} .dPips i.done{background:#2a5d5a}
+  .drow{display:flex;align-items:center;justify-content:center;gap:10px}
+  .dvs{font-family:var(--mono);font-size:9px;color:var(--dim2)}
+  .dchip{border:1px solid var(--hair2);border-radius:11px;padding:9px 12px;text-align:center;
+    min-width:88px;background:#10131f}
+  .dchip.lead{box-shadow:0 0 24px -12px var(--gold);border-color:#FFC93B66}
+  .dchip .tn{font-family:var(--disp);font-size:13px;font-weight:700}
+  .dchip .vv{font-family:var(--disp);font-size:23px;font-weight:700;color:var(--gold);
+    font-variant-numeric:tabular-nums;line-height:1.15}
+  .dchip .vv .back{color:#3b4470}
+  .dchip .lb{font-family:var(--mono);font-size:8.5px;color:var(--gold);margin-top:1px}
+  .dcat{display:flex;align-items:center;gap:9px;justify-content:center;border:1px solid var(--hair2);
+    border-radius:11px;padding:10px}
+  .dcat .ic{font-size:20px} .dcat .nm{font-family:var(--disp);font-size:21px;font-weight:700;color:var(--cy)}
+  .dcat .df{font-family:var(--mono);font-size:9.5px;color:var(--dim2);margin-left:6px}
+  .dacts{display:flex;gap:7px;justify-content:center}
+  .dacts .a{font-family:var(--disp);font-size:13px;font-weight:700;border:1px solid var(--hair2);
+    border-radius:9px;padding:6px 12px;color:var(--dim)}
+  .dacts .a.gold{color:#FFE9A8;border-color:#FFC93B66;background:linear-gradient(#33260a,#1d1606)}
+  .dhero{font-family:var(--disp);font-size:21px;font-weight:700;text-align:center;line-height:1.2}
+  .dsub{font-family:var(--mono);font-size:10px;color:var(--dim2);text-align:center}
+  .dwarn{font-size:11.5px;color:#F0E1BC;background:#17130a70;border-left:3px solid var(--gold);
+    border-radius:0 8px 8px 0;padding:7px 10px;line-height:1.55}
+  .dopt{display:flex;align-items:center;gap:9px;border:1px solid var(--hair);border-radius:9px;
+    padding:8px 10px;background:#10131f;font-size:12.5px}
+  .dopt .ix{font-family:var(--disp);font-size:12px;font-weight:700;color:var(--dim2);width:12px}
+  .dopt .tx{flex:1}
+  .dopt .av2{display:flex;gap:3px}
+  .dopt.sel{border-color:#22f5dc70;background:#0c2b2c}.dopt.sel .ix{color:var(--cy)}
+  .dopt.ok{border-color:#2fe39b90;background:#0a2a20}.dopt.ok .ix{color:var(--green)}
+  .dopt.no{border-color:#ff3d6380;background:#2a0d16}.dopt.no .ix{color:var(--red)}
+  .dav{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;
+    font-family:var(--disp);font-size:11px;font-weight:700;color:#fff}
+  .dav.cap{box-shadow:0 0 0 1.5px var(--gold)}
+  .dtally{font-family:var(--mono);font-size:11px;color:var(--dim);text-align:center}
+  .dtally b{color:var(--cy);font-family:var(--disp);font-size:14px}
+  .dcast{border:1px solid #FF3D6340;border-left:3px solid var(--red);background:#1c0d1388;
+    border-radius:0 9px 9px 0;padding:8px 11px;font-size:11.5px;color:#FFC3CF;line-height:1.55}
+  .dcast b{color:#FF8FA3}
+  .dpack{width:86px;height:120px;perspective:700px;margin:0 auto}
+  .dpack .bk,.dpack .fa{width:100%;height:100%;border-radius:11px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;text-align:center;padding:8px}
+  .dpack .bk{border:1px solid #2a3050;font-family:var(--disp);font-size:26px;color:#3b4470;
+    background:repeating-linear-gradient(45deg,#10142a,#10142a 6px,#0b0e1d 6px,#0b0e1d 12px)}
+  .dpack.open .fa{border:1px solid #B84DFF66;background:linear-gradient(160deg,#B84DFF26,#0a0d16 60%);
+    box-shadow:0 0 34px -14px var(--vi)}
+  .dpack .fa .rr{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--vi)}
+  .dpack .fa .nm{font-family:var(--disp);font-size:18px;font-weight:700;color:var(--vi);letter-spacing:.1em}
+  .dpack .fa .ds{font-size:9.5px;color:var(--dim2)}
+  .dhand{display:flex;align-items:center;gap:8px;border:1px solid var(--hair);border-radius:11px;
+    padding:8px 10px;background:#10131f}
+  .dhand .lb{font-family:var(--mono);font-size:9px;color:var(--dim2)}
+  .dhand .hc{flex:1;display:flex;align-items:center;gap:8px;border:1px solid #B84DFF66;border-radius:8px;
+    padding:6px 9px;background:linear-gradient(120deg,#B84DFF22,#0b0e18 72%);
+    font-family:var(--disp);font-size:14px;font-weight:700;color:var(--vi);letter-spacing:.08em}
+  .dhand .hc em{font-style:normal;font-family:var(--mono);font-size:9px;color:var(--dim2);margin-left:auto}
+  @media(prefers-reduced-motion:no-preference){
+    .dStage>*{animation:dIn .3s ease-out both}
+    @keyframes dIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+    .dpack.open .fa{animation:dFlip .5s cubic-bezier(.3,.9,.3,1) both}
+    @keyframes dFlip{from{transform:rotateY(-90deg);filter:brightness(2.4)}to{transform:none;filter:none}}
+  }
+  
+  
+  .xPane{position:fixed;inset:0;z-index:66;background:#03040adc;backdrop-filter:blur(7px);
+    display:flex;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto}
+  .xIn{width:100%;max-width:430px;border:1px solid var(--hair2);border-radius:18px;padding:15px;
+    background:linear-gradient(#0E1120,#0A0C16);display:flex;flex-direction:column;gap:10px;
+    box-shadow:0 40px 90px -40px #000;margin:auto 0}
 
   /* ===== 開場 ===== */
   .intro{position:fixed;inset:0;z-index:95;background:#04050B;display:flex;align-items:center;
@@ -493,10 +660,14 @@
 <button class="mute" id="mute" aria-label="音效">🔊</button>
 <button class="helpBtn hide" id="helpBtn" aria-label="玩法說明">？</button>
 <div id="helpHost"></div>
+<div id="explainHost"></div>
+<div id="panelHost"></div>
 
 <div class="app">
   <!-- 進入 -->
-  <section id="s-start">
+  <section id="s-home" class="hide" style="display:flex;flex-direction:column;gap:10px"></section>
+
+  <section id="s-start" class="hide">
     <h1>誰是<b>知識王</b></h1>
     <p class="sub">分隊搶答，但分數是籌碼</p>
     <div class="card" style="display:flex;flex-direction:column;gap:12px">
@@ -535,7 +706,7 @@
     <button class="btn ghost" id="toggleSpec" style="margin-top:9px">—</button>
     <div class="card hide" id="hostBox" style="margin-top:10px;display:flex;flex-direction:column;gap:10px">
       <div class="row">
-        <div><label>回合數</label><select id="rounds"><option value="6">6 回合</option><option value="12" selected>12 回合</option></select></div>
+        <div><label>回合數</label><select id="rounds"><option value="6">6 回合 · 約 6 分</option><option value="10" selected>10 回合 · 約 10 分</option><option value="15">15 回合 · 約 15 分</option></select></div>
         <div><label>隊伍</label><select id="tcount"><option value="2" selected>2 隊</option></select></div>
       </div>
       <button class="btn ghost" id="shuffle">重新分隊</button>
@@ -628,14 +799,14 @@
         <div class="b"><i id="endBarB" style="background:linear-gradient(90deg,#4D8BFF,#8fb6ff)"></i></div>
       </div>
     </div>
-    <div class="endSec">TEAM STATS</div>
-    <div class="stTable" id="endStats"></div>
-    <div class="endSec">PLAYER AWARDS</div>
-    <div class="awGrid" id="endAwards"></div>
     <div class="chartBox"><div class="cp">每回合分數走勢</div><div id="endChart"></div></div>
-    <button class="btn" id="again" style="margin-top:12px">回到組隊大廳<small>重置分數，重新分隊</small></button>
+    <div class="btnRow" style="margin-top:10px">
+      <button class="btn ghost" id="openTeam">隊伍數據<small>9 項對比</small></button>
+      <button class="btn ghost" id="openAward">個人獎項<small>看誰拿了什麼</small></button>
+    </div>
+    <button class="btn gold" id="again" style="margin-top:8px">回到組隊大廳<small>重置分數，重新分隊</small></button>
   </section>
-<div id="qk-ver" style="position:fixed;right:6px;bottom:4px;font-family:var(--mono);font-size:9px;color:#3a4160;z-index:5;pointer-events:none">v1.2.0</div>
+<div id="qk-ver" style="position:fixed;right:6px;bottom:4px;font-family:var(--mono);font-size:9px;color:#3a4160;z-index:5;pointer-events:none">v1.3.0</div>
 </div>
 <div id="sheetHost"></div>
 <div id="fxHost"></div>
@@ -711,7 +882,8 @@ db.ref('.info/connected').on('value',function(s){netOK=!!s.val();if(!netOK)net('
 net('連線中…');
 auth.signInAnonymously().then(function(){uid=auth.currentUser.uid;net('');
   var p=new URLSearchParams(location.search).get('room');
-  if(p){$('code').value=p.replace(/\D/g,'').slice(0,6);}
+  if(p){var cd=p.replace(/\D/g,'').slice(0,6);$('code').value=cd;if(cd.length===6)inviteCode=cd;}
+  renderHome();$('s-home').classList.remove('hide');
   var nm=localStorage.getItem('qk-nick');if(nm)$('nick').value=nm;
 }).catch(function(e){net('登入失敗：'+(e.code||e.message),true);});
 function now(){return Date.now()+offset;}
@@ -764,6 +936,7 @@ function doJoin(asSpec){
 $('join').addEventListener('click',function(){doJoin(false);});
 $('joinSpec').addEventListener('click',function(){doJoin(true);});
 function enter(code){
+  closeExplain();$('s-home').classList.add('hide');
   room=code;ref=db.ref('rooms/'+code);
   history.replaceState(null,'',location.pathname+'?room='+code);
   ref.child('players/'+uid+'/online').onDisconnect().set(false);
@@ -893,35 +1066,298 @@ setInterval(function(){try{
   if(S&&S.meta&&S.meta.phase!=='lobby'&&S.meta.phase!=='end'){guardLeaders();}
 }catch(e){}},900);
 
-/* ---- 玩法說明（遊戲中隨時可開） ---- */
-var HELP=[
-  ['一回合的順序','公布領域 → 暗押籌碼 → 叫價 → 準備（有人持卡才跑）→ 作答 → 結算 → 抽卡'],
-  ['誰能作答','押得高的那一隊獨得作答權；兩隊同注則進入搶答，比誰先送出'],
-  ['隊長做什麼','押籌碼、叫價、搶答時按送出答案；投票權 1.5 票；不能持有卡片'],
-  ['隊員做什麼','作答時投票，多數決決定隊伍答案；可以抽到並持有卡片，卡片只有持有者能發動'],
-  ['答對怎麼算','依難度得分（簡單 1,000 到地獄 3,000）；答錯則扣掉自己押的籌碼'],
-  ['搶答失手','先送出的隊答錯，換對手作答；若對手也答錯，兩隊都不扣分'],
-  ['卡片','答對的隊伍有 30% 抽到一張，一場每種卡只會出現一次，每隊每回合最多用 1 張']
-];
-function openHelp(){
-  var h='<div class="helpPane" id="helpPane"><div class="in">'+
-    '<h3>怎麼玩</h3>'+
-    '<div class="roles">'+
-      '<div class="role cap"><div class="t">隊長 <em>1 隊 1 人</em></div>'+
-      '<ul><li>決定押多少籌碼</li><li>叫價加注或維持</li><li>搶答時按送出答案</li><li>投票權 1.5 票</li><li>不能持有卡片</li></ul></div>'+
-      '<div class="role"><div class="t">隊員 <em>其餘所有人</em></div>'+
-      '<ul><li>作答時投票選答案</li><li>可以抽到並持有卡片</li><li>卡片只有持有者能發動</li><li>投票權 1 票</li></ul></div>'+
-    '</div>';
-  HELP.forEach(function(x){
-    h+='<div class="fl"><b>'+x[0]+'</b>　'+x[1]+'</div>';
-  });
-  h+='<button class="btn ghost" id="helpClose">關閉</button></div></div>';
-  $('helpHost').innerHTML=h;
-  $('helpPane').addEventListener('click',function(e){
-    if(e.target.id==='helpPane')$('helpHost').innerHTML='';});
-  $('helpClose').addEventListener('click',function(){$('helpHost').innerHTML='';});
+/* ================= 說明頁裡的動畫演示 ================= */
+var dTimer=null;
+function dv(){return '<span class="dvs">VS</span>';}
+function chipCard(t,v,hide,lead){
+  var c=t==='r'?'var(--red)':'var(--blue)';
+  return '<div class="dchip'+(lead?' lead':'')+'" style="border-color:'+c+'55">'+
+    '<div class="tn" style="color:'+c+'">'+(t==='r'?'紅隊':'藍隊')+'</div>'+
+    '<div class="vv">'+(hide?'<span class="back">?</span>':v.toLocaleString('en-US'))+'</div>'+
+    (lead?'<div class="lb">目前最高</div>':'')+'</div>';
 }
-$('helpBtn').addEventListener('click',openHelp);
+var FLOWN=['公布領域','暗押','叫價','準備','作答','結算','抽卡'];
+function flowBar(i){
+  return '<div class="dflow">'+FLOWN.map(function(x,k){
+    return '<span class="'+(k===i?'on':(k<i?'done':''))+'">'+x+'</span>';}).join('')+'</div>';
+}
+function dopt(L,txt,cls,avs){
+  return '<div class="dopt '+(cls||'')+'"><span class="ix">'+L+'</span><span class="tx">'+txt+'</span>'+
+    '<span class="av2">'+(avs||'')+'</span></div>';
+}
+function av(n,t,cap){
+  var c=t==='r'?'linear-gradient(#FF3D63,#B0203F)':'linear-gradient(#4D8BFF,#2453A8)';
+  return '<span class="dav'+(cap?' cap':'')+'" style="background:'+c+'">'+n+'</span>';
+}
+var DEMOS={
+ flow:{t:'一回合怎麼跑',n:'ROUND FLOW',f:[
+  {ms:1200,h:flowBar(0)+'<div class="dcat"><span class="ic">∑</span><span class="nm">數學</span>'+
+    '<span class="df">難度 ?</span></div>',
+    n:'<b>① 公布領域</b>　約 3 秒。只公布領域，難度要到作答才知道'},
+  {ms:1400,h:flowBar(1)+'<div class="drow">'+chipCard('r',0,1)+dv()+chipCard('b',0,1)+'</div>'+
+    '<div class="dsub">隊長專屬 · 兩隊互相看不到</div>',
+    n:'<b>② 暗押籌碼</b>　最多 15 秒。兩隊都送出就立刻進下一步'},
+  {ms:1400,h:flowBar(2)+'<div class="drow">'+chipCard('r',1500,0,1)+dv()+chipCard('b',1000)+'</div>'+
+    '<div class="dacts"><span class="a gold">加注</span><span class="a">維持</span></div>',
+    n:'<b>③ 輪流叫價</b>　落後的一方先決定，每輪 8 秒'},
+  {ms:1500,h:flowBar(3)+'<div class="dhero" style="color:var(--gold)">準備階段</div>'+
+    '<div class="dsub">出牌或跳過</div>'+
+    '<div class="dwarn">沒有人持卡的回合，這一段會自動跳過</div>',
+    n:'<b>④ 準備</b>　最多 15 秒，而且不是每回合都有'},
+  {ms:1600,h:flowBar(4)+dopt('A','畢氏定理','sel',av('翔','r')+av('邊','r',1))+
+    dopt('B','餘弦定理','sel',av('美','r'))+
+    '<div class="dsub">30 秒 · 全員投完就直接對答案</div>',
+    n:'<b>⑤ 作答</b>　難度這時候才公布'},
+  {ms:1500,h:flowBar(5)+'<div class="dhero" style="color:var(--green)">答對了　+2,000</div>'+
+    '<div class="dsub">正解與解說會一起顯示</div>',
+    n:'<b>⑥ 結算</b>　10 秒，時間到自動進下一回合'},
+  {ms:1500,h:flowBar(6)+'<div class="dpack open"><div class="fa">'+
+    '<div class="rr">？？？</div><div class="nm">＊＊＊＊</div></div></div>',
+    n:'<b>⑦ 抽卡</b>　答對的隊伍才有。最後一回合不抽'},
+  {ms:1800,h:'<div class="dloop">① 公布領域 › ② 暗押 › ③ 叫價 › ④ 準備 › ⑤ 作答 › ⑥ 結算 › ⑦ 抽卡</div>'+
+    '<div class="dhero" style="color:var(--cy)">重複 6／10／15 回合</div>'+
+    '<div class="dsub">跑完進入最終結算</div>',
+    n:'一回合約 <b>1 分鐘</b>，所以整場大約 6／10／15 分鐘'}
+ ]},
+ bet:{t:'押注與作答權',n:'BIDDING',f:[
+  {ms:1100,h:'<div class="dcat"><span class="ic">∑</span><span class="nm">數學</span>'+
+    '<span class="df">難度 ?</span></div>',n:'每一題先公布領域，但<b>不公布難度</b>'},
+  {ms:1000,h:'<div class="drow">'+chipCard('r',0,1)+dv()+chipCard('b',0,1)+'</div>',
+    n:'兩隊同時暗押，<b>看不到對方押多少</b>'},
+  {ms:1200,h:'<div class="drow">'+chipCard('r',1500,0,1)+dv()+chipCard('b',1000)+'</div>',
+    n:'掀牌：紅隊 1,500 領先，藍隊落後 500'},
+  {ms:1300,h:'<div class="drow">'+chipCard('r',1500,0,1)+dv()+chipCard('b',1000)+'</div>'+
+    '<div class="dacts"><span class="a gold">加到 2,000</span><span class="a">維持</span></div>',
+    n:'<b>落後的一方先決定</b>：加注搶回來，或維持'},
+  {ms:1300,h:'<div class="drow">'+chipCard('r',1500)+dv()+chipCard('b',2000,0,1)+'</div>'+
+    '<div class="dacts"><span class="a gold">跟到 2,000</span><span class="a">維持</span></div>',
+    n:'藍隊加到 2,000，換紅隊決定'},
+  {ms:1400,h:'<div class="drow">'+chipCard('r',1500)+dv()+chipCard('b',2000,0,1)+'</div>'+
+    '<div class="dhero" style="color:var(--cy)">藍隊 取得作答權</div>',
+    n:'紅隊選擇維持 →<b>押得高的那一隊獨得作答權</b>'},
+  {ms:1600,h:'<div class="dhero" style="color:var(--cy)">藍隊 作答中…</div>'+
+    '<div class="dsub">紅隊只能看，不能動</div>'+
+    '<div class="dwarn">但藍隊答錯的話，賠掉的是自己押的 2,000</div>',
+    n:'押越多，拿到的機會越大，賠的也越多'}
+ ]},
+ vote:{t:'隊伍怎麼決定答案',n:'VOTING',f:[
+  {ms:900,h:dopt('A','畢氏定理')+dopt('B','餘弦定理')+dopt('C','海龍公式'),
+    n:'題目出現，<b>每個隊員各投一票</b>'},
+  {ms:900,h:dopt('A','畢氏定理')+dopt('B','餘弦定理','sel',av('美','r'))+dopt('C','海龍公式'),
+    n:'小美投了 B'},
+  {ms:900,h:dopt('A','畢氏定理','sel',av('翔','r'))+dopt('B','餘弦定理','sel',av('美','r'))+
+    dopt('C','海龍公式'),n:'阿翔投了 A，目前 1 比 1'},
+  {ms:1300,h:dopt('A','畢氏定理','sel',av('翔','r')+av('邊','r',1))+
+    dopt('B','餘弦定理','sel',av('美','r'))+dopt('C','海龍公式')+
+    '<div class="dtally">A <b>2.5</b> ／ B <b>1</b></div>',
+    n:'隊長（金框）的票算 <b>1.5 票</b>，所以永遠不會平手'},
+  {ms:1600,h:dopt('A','畢氏定理','ok',av('翔','r')+av('邊','r',1))+
+    dopt('B','餘弦定理','no',av('美','r'))+dopt('C','海龍公式')+
+    '<div class="dhero" style="color:var(--green)">答對了　+2,000</div>',
+    n:'全員投完就<b>直接對答案</b>，沒有鎖定按鈕'}
+ ]},
+ buzz:{t:'搶答與補救',n:'BUZZER',f:[
+  {ms:1100,h:'<div class="drow">'+chipCard('r',1500)+dv()+chipCard('b',1500)+'</div>',
+    n:'兩隊押一樣多，沒有人獨得作答權'},
+  {ms:1200,h:'<div class="dhero" style="color:var(--vi)">搶答對決</div>'+
+    '<div class="dsub">兩隊同時作答 · 隊長先送出者定案</div>',n:'同注就進入<b>搶答</b>'},
+  {ms:1100,h:'<div class="dhero" style="color:var(--blue)">藍隊 送出答案</div>'+
+    '<div class="dsub">比紅隊快了 1.2 秒</div>',n:'藍隊隊長先按下送出'},
+  {ms:1200,h:'<div class="dhero" style="color:var(--red)">答錯了</div>'+
+    '<div class="dsub">藍隊選了 C</div>',n:'搶得快，但答錯了'},
+  {ms:1500,h:'<div class="dcast"><b>藍隊 搶答錯誤</b>（答了 C）　→　換 <b>紅隊</b> 作答。'+
+    '若也答錯，<b>兩隊都不扣分</b>。</div>'+
+    '<div class="dhero" style="color:var(--cy)">現在是紅隊作答</div>',
+    n:'<b>全場都會看到</b>是哪一隊錯、錯在哪個選項'},
+  {ms:1700,h:'<div class="dhero" style="color:var(--dim)">兩隊都答錯</div>'+
+    '<div class="dsub">誰都不扣分</div>'+
+    '<div class="dwarn">但紅隊本來有機會白撿這一題</div>',
+    n:'所以<b>搶快是有代價的</b>——猜錯等於把機會送給對手'}
+ ]},
+ card:{t:'功能卡',n:'CARDS',f:[
+  {ms:1000,h:'<div class="dhero" style="color:var(--green)">紅隊 答對了</div>',
+    n:'只有<b>答對的隊伍</b>才有機會抽卡'},
+  {ms:1200,h:'<div class="dpack"><div class="bk">?</div></div>',
+    n:'不是每次答對都抽得到'},
+  {ms:1500,h:'<div class="dpack open"><div class="fa">'+
+    '<div class="rr">？？？</div><div class="nm">＊＊＊＊</div>'+
+    '<div class="ds">遊戲裡才看得到</div></div></div>',
+    n:'抽到什麼卡，<b>這裡不會告訴你</b>——被打到一次就記住了'},
+  {ms:1400,h:'<div class="dhand"><span class="lb">紅兵 的手牌</span>'+
+    '<span class="hc">＊＊＊＊<em>可使用 ▸</em></span></div>',
+    n:'<b>卡在誰手上就只有他能發動</b>，不是隊長說了算'},
+  {ms:1600,h:'<div class="dphase"><span class="p on">準備階段</span><span class="ar">›</span>'+
+    '<span class="p">作答階段</span></div>'+
+    '<div class="dsub">下注結果出來了，但還沒看到題目</div>'+
+    '<div class="dhand"><span class="lb">你的手牌</span>'+
+    '<span class="hc">＊＊＊＊<em>可使用 ▸</em></span></div>',
+    n:'<b>時機一：準備階段</b>。改變整題規則的卡在這裡出'},
+  {ms:1600,h:'<div class="dphase"><span class="p">準備階段</span><span class="ar">›</span>'+
+    '<span class="p on">作答階段</span></div>'+
+    '<div class="dsub">題目和四個選項都看到了</div>'+
+    '<div class="dhand"><span class="lb">你的手牌</span>'+
+    '<span class="hc">＊＊＊＊<em>可使用 ▸</em></span></div>',
+    n:'<b>時機二：作答階段</b>。要看到題目才有用的卡在這裡出'},
+  {ms:1500,h:'<div class="dfx">＊＊＊＊<span>發動</span></div>'+
+    '<div class="dcast2">紅隊 發動了 <b>＊＊＊＊</b>（紅兵）</div>',
+    n:'發動的瞬間<b>全場都會看到</b>是哪一隊、用了什麼、誰出的'},
+  {ms:1700,h:'<div class="dwarn">隊長不持卡<br>每人手牌上限 1 張，全隊上限 3 張<br>'+
+    '每隊每回合最多用 1 張<br>一場遊戲每種卡只會出現一次</div>',
+    n:'沒有人持卡的回合，<b>準備階段會自動跳過</b>'}
+ ]}
+};
+/* 手動翻頁為主，自動播放是選項；自動的停留時間依註解長度加權 */
+var dKey='',dIdx=0,dAuto=false;
+function dAutoMs(fr){
+  var txt=String(fr.n).replace(/<[^>]+>/g,'');
+  return Math.round(fr.ms*1.7+txt.length*55);          // 比原本慢很多，長句停更久
+}
+function dShow(i){
+  var d=DEMOS[dKey];if(!d)return;
+  clearTimeout(dTimer);
+  dIdx=Math.max(0,Math.min(i,d.f.length-1));
+  var fr=d.f[dIdx],last=(dIdx===d.f.length-1);
+  var st=$('dStage');if(!st)return;
+  st.innerHTML=fr.h;$('dNote').innerHTML=fr.n;
+  $('dPips').innerHTML=d.f.map(function(_,k){
+    return '<i class="'+(k===dIdx?'on':(k<dIdx?'done':''))+'"></i>';}).join('');
+  $('dPrev').disabled=(dIdx===0);
+  $('dNext').innerHTML=last?'從頭再看一次<small>REPLAY</small>'
+                           :'下一步<small>'+(dIdx+1)+' / '+d.f.length+'</small>';
+  $('dNext').className='btn'+(last?' ghost':'');
+  $('dAuto').innerHTML=dAuto?'暫停自動播放<small>改成自己按</small>'
+                            :'自動播放<small>放慢速度，一路看完</small>';
+  if(dIdx===0)tone(420,.06,'triangle',.02);
+  else if(last)tone(660,.1,'triangle',.03);
+  else tone(380+dIdx*55,.05,'triangle',.02);
+  if(dAuto&&!last)dTimer=setTimeout(function(){dShow(dIdx+1);},dAutoMs(fr));
+  if(dAuto&&last){dAuto=false;$('dAuto').innerHTML='自動播放<small>放慢速度，一路看完</small>';}
+}
+function dNext(){
+  var d=DEMOS[dKey];if(!d)return;
+  if(dIdx>=d.f.length-1){dShow(0);return;}
+  dShow(dIdx+1);
+}
+function playDemo(key){dKey=key;dAuto=false;dShow(0);}
+
+
+var FLOW=['公布領域','暗押籌碼','輪流叫價','準備（有卡才跑）','作答','結算','抽卡'];
+var DEEP={
+  score:{t:'分數怎麼算',h:
+    '<p>每題的分數由<b>難度</b>決定，難度在作答時才公布——下注的時候你只知道領域。</p>'+
+    '<div class="tbl"><div><span>簡單</span><span>1,000</span></div>'+
+    '<div><span>中等</span><span>1,500</span></div>'+
+    '<div><span>困難</span><span>2,000</span></div>'+
+    '<div><span>地獄</span><span>3,000</span></div></div>'+
+    '<p>答錯扣掉的是<b>你自己押的籌碼</b>，押越多賠越多。所以真正的賭注不是分數，是你對這個領域有多少把握。</p>'+
+    '<p>兩隊都答錯的話<b>誰都不扣</b>。分數可以是負的，落後的隊永遠有翻盤空間。</p>'},
+  buzz:{t:'搶答與補救',h:
+    '<p>叫價結束時<b>押得高的那一隊獨得作答權</b>，另一隊只能看。</p>'+
+    '<p>兩隊押一樣多就進入<b>搶答</b>：兩隊同時作答，隊長手上多一顆送出鍵，誰先按誰定案。</p>'+
+    '<p>搶答按太快答錯的話，機會會<b>換給對手</b>，全場都會看到是哪一隊錯、錯在哪個選項。如果對手也答錯，兩隊都不扣分——所以搶快是有代價的。</p>'},
+  card:{t:'功能卡',h:
+    '<p>答對的隊伍有機率抽到一張功能卡，效果從「本題得分 ×2」到「把這題的獎懲整包丟給對手」都有。</p>'+
+    '<p><b>卡在誰手上，就只有他能發動</b>——不是隊長說了算。隊長本人不持卡，每隊每回合最多用一張。</p>'+
+    '<p>一場遊戲裡<b>每種卡只會出現一次</b>。至於總共有哪些卡，遊戲裡不會列給你看，被打到一次就記住了。</p>'},
+  vote:{t:'隊伍怎麼決定答案',h:
+    '<p>作答時<b>每個隊員各投一票</b>，票型即時顯示在選項旁邊，你看得到隊友選了什麼。</p>'+
+    '<p>隊長的票算 <b>1.5 票</b>，所以不管隊上是單數還是雙數都不會平手。全員投完就直接對答案，沒有鎖定按鈕。</p>'+
+    '<p>30 秒到了還沒投完，就以當下的最高票判定。</p>'}
+};
+function roleCards(){
+  return '<div class="roleGrid">'+
+    '<div class="role cap"><div class="t">隊長 <em>1 隊 1 人</em></div>'+
+    '<ul><li>決定這題押多少籌碼</li><li>叫價時加注或維持</li><li>搶答時按送出答案</li><li>投票權 1.5 票</li><li>不能持有卡片</li></ul></div>'+
+    '<div class="role"><div class="t">隊員 <em>其餘所有人</em></div>'+
+    '<ul><li>作答時投票選答案</li><li>可以抽到並持有卡片</li><li>卡片只有持有者能發動</li><li>投票權 1 票</li></ul></div></div>';
+}
+
+/* ---- 首頁選單 ---- */
+var inviteCode=null;
+function renderHome(){
+  var h='';
+  if(inviteCode){
+    h='<div class="brandBlk"><div class="kk">REAL-TIME TEAM QUIZ BATTLE</div>'+
+      '<div class="tt">誰是<b>知識王</b></div>'+
+      '<div class="ss">有人邀請你加入房間</div></div>'+
+      '<button class="btn gold" id="hGo">加入 '+inviteCode+' 房<small>房號已經幫你填好了</small></button>'+
+      '<button class="btn ghost" id="hHelp">先看遊戲說明<small>第一次玩建議看一下</small></button>';
+  }else{
+    h='<div class="brandBlk"><div class="kk">REAL-TIME TEAM QUIZ BATTLE</div>'+
+      '<div class="tt">誰是<b>知識王</b></div>'+
+      '<div class="ss">兩隊搶答，但分數是籌碼</div></div>'+
+      '<button class="btn gold" id="hGo">開始遊戲<small>建立房間或用房號加入</small></button>'+
+      '<button class="btn ghost" id="hHelp">遊戲說明<small>三分鐘看懂怎麼玩</small></button>';
+  }
+  h+='<div class="hint">題庫 <b>'+QB.length+'</b> 題 · 七領域四難度 · 不用註冊</div>';
+  $('s-home').innerHTML=h;
+  $('hGo').addEventListener('click',function(){
+    $('s-home').classList.add('hide');$('s-start').classList.remove('hide');});
+  $('hHelp').addEventListener('click',function(){openExplain();});
+}
+/* ---- 遊戲說明（首頁與遊戲中共用同一份） ---- */
+var xView='help';
+function renderExplain(){
+  var h='',body='';
+  if(xView==='help'){
+    body='<div class="hpTitle"><h4>怎麼玩</h4><em>HOW TO PLAY</em></div>'+
+      '<p class="hpLead">兩隊比的不只是誰知道答案，還有<b>誰敢押</b>。每一題先公布領域、不公布難度，'+
+      '兩隊暗押籌碼再輪流叫價，<b>押得高的那一隊獨得作答權</b>；押一樣多就進搶答。'+
+      '答對照難度加分，答錯賠掉自己押的注。</p>'+
+      '<div class="flowLine">'+FLOW.map(function(x,i){
+        return '<span class="'+(i===4?'hi':'')+'">'+x+'</span>';}).join('<i>›</i>')+'</div>'+
+      roleCards()+
+      '<div class="subGrid">'+
+        [['flow',1],['bet',1],['vote',1],['buzz',1],['card',1],['score',0]].map(function(x){
+          var k=x[0],d=DEMOS[k]||DEEP[k];
+          return '<button class="subBtn'+(x[1]?' anim':'')+(k==='flow'?' wide':'')+
+            '" data-deep="'+k+'"><span class="n">'+d.t+'</span>'+
+            '<span class="d">'+(x[1]?'▸ 看動畫演示':'TAP TO OPEN')+'</span></button>';}).join('')+
+      '</div>'+
+      '<button class="btn ghost" id="xClose">關閉說明</button>';
+  } else {
+    var key=xView.slice(5);
+    if(DEMOS[key]){
+      var dm=DEMOS[key];
+      body='<div class="hpTitle"><h4>'+dm.t+'</h4><em>'+dm.n+'</em></div>'+
+        '<div class="dStage" id="dStage"></div>'+
+        '<div class="dPips" id="dPips"></div>'+
+        '<div class="dNote" id="dNote"></div>'+
+        '<div class="dCtl"><button class="btn ghost sm" id="dPrev">‹ 上一步</button>'+
+        '<button class="btn" id="dNext">下一步</button></div>'+
+        '<div class="dTap">點畫面任一處也可以前進</div>'+
+        '<button class="btn ghost" id="dAuto">自動播放<small>放慢速度，一路看完</small></button>'+
+        '<button class="btn ghost" data-back="1">回遊戲說明</button>';
+    } else {
+      var d2=DEEP[key];
+      body='<div class="hpTitle"><h4>'+d2.t+'</h4><em>'+key.toUpperCase()+'</em></div>'+
+        '<div class="deep">'+d2.h+'</div>'+
+        '<button class="btn ghost" data-back="1">回遊戲說明</button>';
+    }
+  }
+  $('explainHost').innerHTML='<div class="xPane" id="xPane"><div class="xIn">'+body+'</div></div>';
+}
+function openExplain(){ xView='help'; renderExplain(); tone(520,.09); buzz(10); }
+function closeExplain(){ clearTimeout(dTimer); $('explainHost').innerHTML=''; }
+document.addEventListener('click',function(e){
+  if(!$('explainHost').firstChild)return;
+  if(e.target.id==='xPane'){closeExplain();return;}
+  if(e.target.closest('#xClose')){closeExplain();return;}
+  var d=e.target.closest('[data-deep]');
+  if(d){xView='deep:'+d.dataset.deep;renderExplain();buzz(10);
+    if(DEMOS[d.dataset.deep])playDemo(d.dataset.deep);else tone(620,.08);return;}
+  if(e.target.closest('[data-back]')){clearTimeout(dTimer);xView='help';renderExplain();return;}
+  if(e.target.closest('#dNext')){dNext();return;}
+  if(e.target.closest('#dPrev')){dAuto=false;dShow(dIdx-1);return;}
+  if(e.target.closest('#dAuto')){
+    dAuto=!dAuto;
+    if(dAuto)dShow(dIdx>=DEMOS[dKey].f.length-1?0:dIdx);
+    else{clearTimeout(dTimer);dShow(dIdx);}
+    return;}
+  if(e.target.closest('#dStage')){dNext();return;}
+});
+
+$('helpBtn').addEventListener('click',openExplain);
 
 /* ---- 開場動畫 ---- */
 var TTL='誰是知識王', ISUB='TEAM QUIZ BATTLE · 2 TEAMS · 20 CARDS';
@@ -1229,6 +1665,7 @@ function doReroll(){
   ref.update(u);
 }
 /* ---- 抽卡 ---- */
+function drawRate(){ return ((S.meta&&S.meta.max)||10)<=6 ? 0.50 : 0.35; }
 function freeCards(){
   var used=(S.cards&&S.cards.pool)||{},h=hands(),inHand={};
   for(var k in h)inHand[h[k]]=1;
@@ -1254,7 +1691,7 @@ function afterResult(){
   ['r','b'].forEach(function(t){
     if(!(res.delta&&res.delta[t]>0))return;
     any=true;
-    var to=pickReceiver(t),fc=freeCards(),hit=(Math.random()<0.30)&&to&&fc.length;
+    var to=pickReceiver(t),fc=freeCards(),hit=(Math.random()<drawRate())&&to&&fc.length;
     d[t]={hit:!!hit,card:hit?fc[Math.floor(Math.random()*fc.length)].id:null,to:to||null,
           why:to?'':'手牌已滿'};
   });
@@ -1555,7 +1992,7 @@ function render(){
   if(m.phase==='lobby'){ renderLobby(); return; }
   if(m.phase==='end'){ renderEnd(); return; }
   $('s-lobby').classList.add('hide');$('s-start').classList.add('hide');$('s-end').classList.add('hide');
-  $('s-game').classList.remove('hide');
+  $('s-home').classList.add('hide');$('s-game').classList.remove('hide');
   renderGame();
 }
 function renderLobby(){
@@ -2041,7 +2478,7 @@ function viewPrep(){
 /* ---- 抽卡（開卡包） ---- */
 function viewDraw(){
   $('blkDraw').classList.remove('hide');
-  stage('抽卡','答對的隊伍有 30% 抽到功能卡');
+  stage('抽卡','答對的隊伍有 '+Math.round(drawRate()*100)+'% 抽到功能卡');
   var d=S.draw||{},h='';
   ['r','b'].forEach(function(t){
     var x=d[t];if(!x)return;
@@ -2325,8 +2762,14 @@ function renderEnd(){
   $('endWin').style.color=tie?'var(--gold)':TC[win].color;
   $('endGap').textContent=tie?('兩隊同分 '+fmt(sr)+'　不比答對題數')
                              :('分差 '+fmt(gap)+' 分 · '+histRows().length+' 回合');
+  $('endChart').innerHTML=endChart();
+  $('again').classList.remove('hide');
+  if(lastPhase!=='end'||!endPlayed){ endPlayed=true; playEndAnim(sr,sb,tie,win); }
+  lastPhase='end';
+}
+function sw(v){return v>0?('+'+fmt(v)):(v<0?('−'+fmt(Math.abs(v))):'±0');}
+function buildStatRows(){
   var st=teamStats(),n=st.n;
-  function sw(v){return v>0?('+'+fmt(v)):(v<0?('−'+fmt(Math.abs(v))):'±0');}
   var ROWS=[
     ['答對題數',st.r.correct+' 題',st.b.correct+' 題',st.r.correct,st.b.correct],
     ['取得作答權',st.r.actorRounds+' 回',st.b.actorRounds+' 回',st.r.actorRounds,st.b.actorRounds],
@@ -2344,19 +2787,62 @@ function renderEnd(){
        '<span class="lb">'+x[0]+'</span>'+
        '<span class="r'+(x[4]>=x[3]?' w':'')+'">'+x[2]+'</span></div>';
   });
-  $('endStats').innerHTML=h;
+  return h;
+}
+function buildAwardCards(){
   var A=buildAwards(),ah='';
-  if(!A.length)ah='<div class="hint" style="grid-column:1/-1">這一場沒有足夠的回合紀錄可以評獎</div>';
+  if(!A.length)return '<div class="hint" style="grid-column:1/-1">這一場沒有足夠的回合紀錄可以評獎</div>';
   A.forEach(function(a){
     ah+='<div class="aw'+(a.top?' top':'')+'"><div class="tt">'+a.tt+'</div>'+
         '<div class="who"><i style="background:'+TC[a.team].color+'"></i>'+a.who+'</div>'+
         '<div class="vl">'+a.vl+'</div></div>';
   });
-  $('endAwards').innerHTML=ah;
-  $('endChart').innerHTML=endChart();
-  $('again').classList.remove('hide');
-  if(lastPhase!=='end'||!endPlayed){ endPlayed=true; playEndAnim(sr,sb,tie,win); }
-  lastPhase='end';
+  return ah;
+}
+/* ---- 兩個可以直接截圖的面板 ---- */
+function panelScore(){
+  return '<div class="miniScore"><span style="color:var(--red)">紅 '+fmt(teamOf('r').score||0)+'</span>'+
+    '<span class="vs2">VS</span><span style="color:var(--blue)">藍 '+fmt(teamOf('b').score||0)+'</span></div>';
+}
+function openPanel(kind){
+  var body,title,tag;
+  if(kind==='team'){ title='隊伍數據';tag='TEAM STATS';
+    body=panelScore()+'<div class="stTable" id="endStats" style="margin-top:10px">'+buildStatRows()+'</div>'; }
+  else { title='個人獎項';tag='PLAYER AWARDS';
+    body=panelScore()+'<div class="awGrid" id="endAwards" style="margin-top:10px">'+buildAwardCards()+'</div>'; }
+  var d=new Date(),ds=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+  $('panelHost').innerHTML='<div class="pnl" id="pnlBg"><div class="sheet2">'+
+    '<div class="hd"><div class="t">'+title+'<em>'+tag+'</em></div>'+
+    '<div class="sub"><b>誰是知識王</b><b>房號 '+(room||'—')+'</b><b>'+
+      ((S.meta&&S.meta.max)||'—')+' 回合</b><b>'+ds+'</b></div></div>'+
+    '<div class="bd">'+body+'</div>'+
+    '<div class="ft"><div class="shotHint">這一頁可以直接截圖分享</div>'+
+    '<button class="btn ghost" id="pnlClose">關閉</button></div></div></div>';
+  $('pnlBg').addEventListener('click',function(e){if(e.target.id==='pnlBg')closePanel();});
+  $('pnlClose').addEventListener('click',closePanel);
+  if(kind==='team')animStats();else animAwards();
+  tone(520,.09);buzz(12);
+}
+function closePanel(){$('panelHost').innerHTML='';}
+function animStats(){
+  var rows=$('endStats').querySelectorAll('.strow');
+  Array.prototype.forEach.call(rows,function(row,i){
+    setTimeout(function(){
+      row.style.transition='opacity .38s, transform .38s';
+      row.style.opacity='1';row.style.transform='none';
+      tone(520+i*40,.05,'triangle',.02);
+    },60+i*62);
+  });
+}
+function animAwards(){
+  var aws=$('endAwards').querySelectorAll('.aw');
+  Array.prototype.forEach.call(aws,function(a,i){
+    setTimeout(function(){
+      a.style.transition='opacity .42s, transform .5s cubic-bezier(.2,.9,.3,1)';
+      a.style.opacity='1';a.style.transform='none';
+      tone(700+i*60,.06,'triangle',.026);
+    },80+i*92);
+  });
 }
 function playEndAnim(sr,sb,tie,win){
   var wEl=$('endWin'),gEl=$('endGap');
@@ -2375,28 +2861,14 @@ function playEndAnim(sr,sb,tie,win){
     $('endBarR').style.width=Math.max(3,Math.abs(sr)/mx*100)+'%';
     $('endBarB').style.width=Math.max(3,Math.abs(sb)/mx*100)+'%';
   },600);
-  var rows=$('endStats').querySelectorAll('.strow');
-  Array.prototype.forEach.call(rows,function(row,i){
-    setTimeout(function(){
-      row.style.transition='opacity .4s, transform .4s';
-      row.style.opacity='1';row.style.transform='none';
-      tone(520+i*40,.05,'triangle',.022);
-    },1700+i*85);
-  });
-  var aws=$('endAwards').querySelectorAll('.aw');
-  Array.prototype.forEach.call(aws,function(a,i){
-    setTimeout(function(){
-      a.style.transition='opacity .45s, transform .55s cubic-bezier(.2,.9,.3,1)';
-      a.style.opacity='1';a.style.transform='none';
-      tone(700+i*60,.06,'triangle',.028);
-    },2600+i*115);
-  });
   setTimeout(function(){
     var lr=$('lnR'),lb=$('lnB');
     if(lr){lr.style.transition='stroke-dashoffset 1.3s ease-out';lr.style.strokeDashoffset='0';}
     if(lb){lb.style.transition='stroke-dashoffset 1.3s .18s ease-out';lb.style.strokeDashoffset='0';}
-  },3500);
+  },1500);
 }
+$('openTeam').addEventListener('click',function(){openPanel('team');});
+$('openAward').addEventListener('click',function(){openPanel('award');});
 $('again').addEventListener('click',function(){
   if(!S)return;
   var u={'meta/phase':'lobby','meta/round':0,'meta/endsAt':null,'meta/mode':null,'meta/actor':null,
@@ -2407,7 +2879,7 @@ $('again').addEventListener('click',function(){
     'teams/r/bet':0,'teams/b/bet':0,'teams/r/betLocked':false,'teams/b/betLocked':false,
     'teams/r/passed':false,'teams/b/passed':false,'teams/r/acted':false,'teams/b/acted':false};
   for(var pk in (S.players||{}))u['players/'+pk+'/ready']=false;
-  endPlayed=false;endBuilt=false;
+  endPlayed=false;endBuilt=false;closePanel();
   ref.update(u);tone(392,.12);buzz(20);
 });
 $('toggleSpec').addEventListener('click',function(){
